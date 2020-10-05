@@ -1,0 +1,43 @@
+                                Setting up Linux VM on Windows
+                               ----------------------------------------
+#
+1. Install VirtuablBox (Download from below URL)
+For 64-bit machines:
+--
+https://www.virtualbox.org/wiki/Downloads (OR)
+https://download.virtualbox.org/virtualbox/6.1.10/VirtualBox-6.1.10-138449-Win.exe (Direct Link)
+
+For 32-bit machines:
+--
+https://www.virtualbox.org/wiki/Download_Old_Builds_5_2
+
+
+#
+2. Download "Ubuntu 18.04 Desktop" Image from below URL
+https://releases.ubuntu.com/18.04/ (OR)
+https://releases.ubuntu.com/18.04/ubuntu-18.04.4-desktop-amd64.iso
+
+For 32-bit machines:
+--
+https://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-i386.iso
+
+#
+3. Launch VirtualBox from Windows start
+
+#
+4. Click on 'new' and give a name for your VM ex: 'name: ubuntu-devops-gamut'. Make sure 'Type' is Linux and Version is 'Ubuntu 64-bit'. Hit next
+- Provde RAM for the VM (Min. 2 GB). Keep hitting next to go with default configurations. In 'File location and size' window, provide hard-disk space (20GM recomended)
+
+#
+5. Select you VM machine name and click on 'start'. In 'select startup disk' window, browse and load 'Ubuntu 18.04 Desktop', click on 'start'.
+
+- Select 'Install Ubuntu' --> continue and follow with other configurations.
+
+Note:
+You may get an error something like "Virtualization/VTx" is not enabled. If you get this, go to BIOS settings by pressing F2 or F12 while machine restart. Go to BIOS configurationa and 'enable virtualization'.
+
+
+
+
+
+

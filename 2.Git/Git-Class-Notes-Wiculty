@@ -29,6 +29,7 @@ Staging Index/Stage
 	$ git commit -am "submit all pending changes"
 
 Note: If you want to skip the staging, you need to commit all pending changes.
+      For new file, you have to go throgh the 'stage' process.
 
 
 # Show all the files that are modified as part of a commit (with content)

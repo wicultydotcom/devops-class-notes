@@ -1,0 +1,67 @@
+							Gamut Gurus Technologies
+		Contact: Trainer: +91-97393 68768. Course Advisor: +91-944897 1000. 		
+							Email: info@gamutgurus.com
+	=================================================================================
+							VM creation in AWS
+						----------------------------
+
+1.
+Create an account in 'AWS console management' using below URL and Login.
+https://aws.amazon.com/console/)
+
+2.
+Select the nearest region from top right drop-down. Ex: 'N.Virginia' or 'Mumbai'.
+
+3.
+To create a VM, go to 'Services' at top left corner and select EC2. Now you are in EC2 Dashboard.
+
+4.
+Click on 'Launch Instance'. Select an AMI based on your interested OS.
+Example: I want to create a VM with Ubuntu OS. So I select 'Ubuntu Server 18.04 LTS' AMI. Keep default, '64-bit(x86).
+
+5.
+Select an Instance type as "t2.micro". This is eligible for Free tier account. You get 1vCPU and 1 GM RAM with this instance. Other instance type will cost us as those are not part of free tier account.
+
+6.
+Select 'Next'. The purpose here is to create an EC2 instance quickly with basic configurations. So, don't change any configurations here for now.
+
+7.
+Keep going by clicking 'next' until you see 'Review and Launch' Option. Click on 'Review and Launch'.
+Click on 'Launch' button.
+
+8. 
+In order to connect to this new Linux VM from Windows, we need to create a new 'key pair'. The concept here is, we generate a private key and store in our Windows machine. When we connect to EC2 instance, we have to provide this private key for authentication purpose. Here is what we do..
+- Select 'Create a new key pair'. Give some random name. Ex: GamutDevOpsVMKey. Click on 'Download Key Pair'. You can see 'GamutDevOpsVMKey.pem' in your download location.
+
+9. Now click on 'Launch Instance'.
+
+10. Click on 'View Instances'.
+
+11. You can see the instance running. Wait until you see '2/2 checks passed' under 'Status Checks'. As part of this 2/2 checks, AWS checks if infrastructure is proper and OS is accepting the trafic. This is just to make sure that machine is completely reachable by the user.
+
+12. Now that EC2 instance is created with default configurations, let's see how we connect to it from Windows.
+
+13. We connect to EC2 instance using SSH. But, unfortunately windows don't have SSH client/command by default. So we need to install it. To get SSH client in windows, we have one of popular tool called, Putty. Let's install Putty. Download and install Putty using below URL Or just do Google search.
+https://the.earth.li/~sgtatham/putty/latest/w32/putty-0.73-installer.msi
+
+14. If you remember, we have downloaded 'GamutDevOpsVMKey.pem' file in step:8. This is Private key. But unfortunately, Putty don't understand .pem format. So, we need to convert  it to .ppk which is understandable by it. To convert .pem into .ppk, we use an utility called 'PuttyGen' (This will be installed automatically along with Putty).
+
+15. Launch 'PuttyGen' from Windows launch bar. Let's convert .pem to .ppk. Click on 'Load' and load your the downloaded 'GamutDevOpsVMKey.pem' (Select 'All files' in case you don't see this file while browsing). Now click on 'save private key'. Provide a name for your .ppk file ex: GamutDevOpsVMKey.
+Close PuttyGen.
+
+16. Now .PPK fiel is ready, let's connect to our EC2 instance using this. Launch 'Putty'. To connect to this VM, we need it's public IP. Go to EC2 dashboard and copy it's public IP (IPv4 Public IP
+), which is under 'Description' tab. In this case it is 13.233.141.53.
+
+17. Launch Putty --> Provide Public IP (In Hostname field) --> On the left side menu, under 'Connection', click on 'SSH' and 'Auth' --> browse the .ppk file and load it --> Once prompts for login, provide 'ubuntu' default username.
+
+18. Hurray..! You have got th terminal from AWS instance.
+
+Note: Once practice is done, make sure you stop the machine.
+How do you stop?
+Actions --> Instance Status --> Stop (This will shutdown the machine)
+Actions --> Instance Status --> Terminate (This will destroy the machine -- Note that you can't get your data once the server is terminated)
+
+-
+P Nageswara Rao,
++91- 97393 68768
+Gamut Gurus Technologies
