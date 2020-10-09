@@ -110,15 +110,18 @@ $ git log --author="Ram" --grep="math function"
 # GIT Commands
 
 1.  
+# See the content change of a file which is in 'source' area
 $ git diff Login.java
 
+# See the content change of a file which is in 'stage' area
 $ git diff --staged Login.java
 
+# See the content change of a file after the commit
 $ git show 123abc456
 
 2. Deleting a file
 
-	A.) git rm OMS.java
+        A.) git rm OMS.java
 	    git commit OMS.java -m "comment"
 	    git push
 	    
@@ -168,6 +171,9 @@ Unstage the changes from STAGE area
 # Deleting a branch
         $ git branch -d dev_1.2.3
         $ git push -d origin dev_1.2.3       
+
+Note: How do you restore a branch? how do you identify the sha value. more about 'reflog'
+???
 
 
 Merging:
@@ -232,7 +238,6 @@ git remote
 	
 	PUSH
 	CLONE
-
 
 NOTES:
 SVN & Git differences:
