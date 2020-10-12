@@ -245,7 +245,6 @@ SVN & Git differences:
 - Centralized VCS -  Ex: CVS/SVN/Clearcase/Perforce
 - Distributed VCS -  Ex: GIT/Bitkeeper
 
-
 1.
 SVN is a centralised version control system. In svn, when a user checkout’s the repository, he will get only the source code. Repository is not distributed to the user. In SVN multiple users connect to a single/centralized server. If that server goes down, no user will be able to work.
 
