@@ -1,0 +1,72 @@
+﻿INTERVIEW QUESTION:
+=====================
+1.
+What are the differences between ANT and Maven
+
+2.
+How do you create a jar/war file in Maven?
+
+3.
+What is the  difference between mvn deploy and install?
+
+4.
+Can you explain Maven's lifecycle?
+		- init
+		- validate
+		- compile
+		- test
+		- package
+		- install
+	[Give one line explanation about each phase during your interview]
+
+5.
+What is Maven? Why we use Maven?
+
+6.
+While building the project, you get an error saying some jar file is missing. how do you add that?
+
+7.
+ - What is groupId, artifactId, and Version in Maven?
+ - What are the Maven co-ordinates?
+ - What are the mandatory attributes in pom.xml.
+
+8.
+What is the difference between 1.0-SNAPSHOT(SNAPSHOT) version and 1.0-RELEASE(RELEASE) version.
+
+9.
+What is the default naming convention of an artifacts(jar/war) in Maven?
+
+10.
+How do you generate a site in Maven?
+
+11.
+How do you run a clean build in Maven?
+
+12.
+how do you add a dependency in Maven pom.xml?
+
+13.
+what is a plugin?
+
+14.
+- What is the default path of artifacts in local repository?
+- Where maven stores the built artifacts? 
+
+15.
+How do you create a project in the Maven?
+
+16.
+What are the different binary repositoris we have? Which one you are using for your project?
+
+17.
+- How do you customize the name of your artifact(jar/war) in Maven?
+- How do you change the name of built jar/war file in maven? what changes you need to do in pom.xml file?
+
+18.
+What do you mean by transitive dependency in Maven and can you explain how maven resolves it?
+
+19.
+- What is the significance of scope parameter in dependency section?
+- What are the different scope's we have in Maven?
+
+

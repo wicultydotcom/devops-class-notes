@@ -1,0 +1,60 @@
+ANT Vs Maven
+=============
+ANT:
+0
+======
+1.Ant is a low level build automation tool.
+
+2. Need more time to automate java build and deployment process
+
+3. ANT doesn't have automatic dependency resolution feature.
+
+4. ANT doesn't have anything called convention over configuration. i.e User is free to create any directory structure. ex: since there is no standard project structure, it may take more time for a developer to understand the project(more wramp-up time.)
+
+5.
+Ant is a build tool.
+
+6. 
+ANT is very simple and suitable if we have to do lot of customizations. I think that's why ANT is also used in lot of projects.
+
+7.
+Using ANT we can't generate a site for our project with administration information by default.
+
+8.
+No default mechanism to reuse built artifacts.
+
+9.
+Troubleshooting is very easy as we know  better about our build code.(Since we write everything)
+
+
+
+Maven:
+======
+1. Maven is a highlevel build tool.
+
+2. Within  a very less time, we can automate build and deployment process.
+
+3. Maven has automatic dependency feature. in the sense based on the pom.xml configurations, it can automatically download the dependencies from binary management repositories and add in the classpath during the compilation.
+	It can also handle trasitive dependencies.
+	
+4.
+Maven has convention over configuration mechanism for most of the automation requirements.
+	ex: standard project structure,
+		automatic dependency resolution,
+		predefined build life cycle
+
+5.
+Maven is more than a build tool i.e maven is "project management" tool.
+			ex: using maven, we can generate site for our project which includes, developers workign on a particular project, dependency list, test case statistics, automation graphs.
+
+6. Since Maven is high level tool, may not be suitable if we want to do more customizations.
+As Maven doesn't have easier documentation(relative comparison with ANT), It's little dificult to understand Maven. Especially if we have larger pom files and more customizations.
+
+7. Using Maven, we can generate a site for our project with administration information. So, it can act as a project management tool as well.
+
+8. Artifacts can be uploaded to binary repository management tools and shared across the projects/modules.
+
+9. Troubleshooting may become nightmare sometimes if we are not aware of maven automatic and highlevel concepts.
+
+
+

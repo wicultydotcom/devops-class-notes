@@ -266,4 +266,3 @@ Git seems to be good with merging.
 Git stores each change as SHA values but SVN uses simple numbers as revisions.
 
 
-
