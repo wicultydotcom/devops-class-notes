@@ -176,7 +176,7 @@ Maven way of dependency addition, detection from different repositories.
 #12
 Maven repositories
 	- Central
-	- Private ( Nexus/Jfrog-atifactrory tools )
+	- Private ( You can setup using Nexus / Jfrog-atifactrory tool )
 	- Local (.m2)
 
 #13
@@ -326,6 +326,9 @@ Explain Maven Life cycle phases:
 Qns:
 1. How do you continue the build even after compilation failures.
         for Main & Test
+failOnError=true
        
 2. Maven & ANT comparison
+
+
 
