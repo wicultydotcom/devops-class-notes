@@ -139,7 +139,7 @@ $ passwd gamut
 $ ssh gamut@172.17.0.2
 
 # To Enable root user over ssh for ubuntu containers, we need to change below file.
-  Once this change is done, you can connect to the container using 'root' user.
+  Once this change is done, restart the ssh server (service ssh restart) and you can connect to the container using 'root' user.
 Add below line under "# Authentication:" in "/etc/ssh/sshd_config"
 	PermitRootLogin yes
 
@@ -230,11 +230,6 @@ $ docker container ls -f status=exited
 	sudo docker stop aa3f365f0fdocker4e
 	sudo docker restart gamut
 
-# Attaching to a running container
-	docker attach gamut
-	docker attach b1b1c8dc1939
-
-
 # Run a linux command remotely in a container Or Get an independent terminal from a container remotely (from Host)
 $ docker exec -it tomcat-server /bin/bash  
 
@@ -245,6 +240,7 @@ $ docker exec -it tomcat-server /bin/bash
 # Shortcut Keys
 	Ctrl + p + q - push a running container in background mode.
 	Ctrl + d -  short cut to 'stop' a container.
+
 
 # Inspecting the container's processes from host machine
 	$ docker top <container-name>
@@ -263,7 +259,7 @@ $ docker run -it -d ubuntu /bin/bash
 
   Ex: image name, IP, Memory details, hostname ..etc
 	 
-	 Examples:
+Examples:
 	$ docker inspect <container-name>
 	$ docker inspect -f '{{.Config.Hostname}}' tomcat-server1
 	$ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' tomcatserver1
@@ -301,6 +297,8 @@ $ docker upddate --cpus="2" jenkins-server
 # Push a container in sleep mode
 $ docker pause db-server1
 $ docker unpause db-server1
+
+--> weekend-8:30 batch
 
 --> Jenkins
 

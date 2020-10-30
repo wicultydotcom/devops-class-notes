@@ -1,0 +1,293 @@
+GAMUT GURUS TECHNOLOGIES:
+Office: 944897 1000
+		944897 2000
+===============================================
+
+1. What is continuos integration?
+
+	- C.I integration is nothing but continous compilation, testing and deployment.
+	- C.I is a process which monitors the new changes coming into V.C.S like Git, checkouts the source code, builds the change, runs the test case to test the change and deploys it to given environment automatically (seemlessly) without any manual intervention.
+
+2. What is continuous delivery?
+
+
+3.
+#How do you change Jenkins HOME directory??
+
+Go to $USER_HOME/.bashrc and add below ENV variable.
+========
+export JENKINS_HOME=/home/praveen/jen/.jenkins
+
+Jenkins installation:
+=====================
+Approach:1
+	1. download JDK and setup JAVA_HOME Environment variable as shown below
+		export JAVA_HOME=/path/to/extracted/java/without/bin/dir
+		export PATH=$JAVA_HOME/bin:$PATH
+
+	2. download Tomcat
+	3. download jenkins.war
+	4. copy jenkins.war to $TOMCAT_HOME/webapps
+		[deploying jenkins to tomcat]
+	5. start Tomcat server using $TOMCAT_HOME/bin/startup.sh
+	6. Launch Jenkins using below URL
+				http://localhost:8080/jenkins	
+	7. command to shutdown tomcat:
+			$TOMCAT_HOME/bin/shutdown.sh
+
+Approach:2
+# Running jenkins direclty from command line. not suitable for production jenkins.
+	Jenkins.war comes with a light-weight server called "jetty". below command runs jenkins in jetty server.
+
+	- $ java -jar jenkins.war
+you can launch jenkins using below URL:
+				http://localhost:8080
+
+Approach:3
+	sudo apt-get install jenkins
+
+
+2. Why we need continous Integration?
+	Refer c.i feature.
+
+3. Have you created jenkins job or just worked on existing jenkins environment? 
+- How do you create a new build/jenkins job?
+
+4. How do you install jenkins? What are the different ways?
+	1. java -jar jenkins.war  [http://localhost:8080] [uses jetty server]
+	2. yum install jenkins[RHEL] OR apt-get install jenkins
+													[Ubuntu]
+	3. Deploy jenkins.war in tomcat like any other web applications. [Production approach]
+
+5. How do you setup a crontab in linux?
+	Note: Refer Google and setup a simple crontab.
+  - creating a new crontab.	
+	crontab -e
+		====
+		* * * * * `command/any-script`
+		Minute   Hour	 DOM	 Month  DOW	
+		0-59	 0-23	1-31	1-12	0-7
+		====
+  - list all crontabs
+	crontab -l
+  - remove all crontabs
+	crontab -r	
+
+6. How do you migrate jenkins from one server to another?
+	- Install Jenkins in the new machine.
+	- Copy .jenkins to new machine's $USER_HOME dir.
+	- Start jenkins server in the new machine.
+	[ Note: Usually, we don't copy workspace from old jenkins server to new as it contains large size of source code.]
+	[command to exclude workspace.
+		tar --exclude=workspace -cvf jenkins.tar .jenkins]
+
+7. How do you start/stop jenkins?
+
+8. Jenkins is running some jobs and I want to restart it. How do you restart?
+   - How do you restart the jenkins without interrupting running jobs?
+
+9. What is the default port number of jenkins?
+
+10. How do you change the port number for Jenkins?
+	Go to $TOMCAT_HOME/conf/server.xml
+	Change port number in this line: [ port="8080" protocol="HTTP/1.1" ] 
+
+p
+11. How do you check Jenkins logs?
+	How do you check your Application logs?
+	$TOMCAT_HOME/logs/catalina.2017-08-08.log
+
+
+12. What challenges you faced while working with Jenkins?
+	- What are the common issues you see in Jenkins?
+		- compilation
+		- deployment
+		- jdk or maven installation
+		- disk space
+		- port change
+		- slave node configuration issues
+
+
+14. Where does Jenkins store global and job related configurations?
+	Global configurations: $JENKINS_HOME/.jenkins/config.xml
+	Job configurations: $JENKINS_HOME/.jenkins/jobs/job_name/config.xml
+
+
+15. Where Jenkins stores all plugins data?
+	$JENKINS_HOME/.jenkins/plugins
+
+16. I want to modify JDK version from 1.7 to 1.8 in 1000 jobs? How do you do it?
+	Jenkins stores all configuration data in .jenkins/jobs/
+	job_name/config.xml
+	we can find 1.7 in all config.xml and replace it with 
+	1.8 using some linux command or small script.
+	Then to load the changes, we need to run "Reload configurations from disk"
+
+17. How do you setup build and deployment for your project?
+	- configure GIT URL
+	- configure maven build command i.e 'mvn install"
+	- go to post build section and call deploy.sh
+	
+	Deployment scritpt steps:
+		- before copying the war file, our script checks 
+		  for diskspace.
+		- copy war file to all tomcat servers in an environment(copy using scp)
+		- shutdown the tomcat
+		- start the tomcat
+
+18. How many builds you store in your jenkins.
+	How do you rotate logs for your Jenkins? 
+
+19. How do you backup your jenkins data?
+
+20. How do you configure different jenkins jobs to run with different JDKs?
+
+21. What is the difference between "Build periodically"  and "Poll scm"?
+
+22. How do you configure security for your jenkins? Are you using LDAP for authentication?
+
+23. What is matrix based security? How do you provide access to your users?
+
+24. What is a plugin?
+	What plugins you installed? Name few plugins which you have used?
+====
+1. Thin Backup -
+Using Cron tab style/notion, we can schedule the backups for jenkins. We usually take backup for Jenkins home directory. Once we install this plugin, It adds "	ThinBackup" section to "manage jenkins".
+
+
+3. Job Configuration History plugin:
+we can check job configuration history. for example-
+who deleted a job or configuration
+who modifed jdk version
+who modified build trigger schedule
+user addition/deletion..etc.
+Once we install this plugin, we can see who has done what or who made what changes. It records the history of all user's modifications.
+
+
+4. Shelve project:
+    If we have large size of build log files, un-used jenkins jobs, Jenkins will become slow(as it has to scan all projects for generating reports). So, It's good idea to archive any un-used jenkins jobs so that jenkins don't scan the project. since this plugin archives the projects, we can restore them if we want in the future.
+
+5. Green balls plugin
+
+25. What are the different ways of installing a plugin?
+	
+26. What is "Reload configurations from the Disk"? when do you use this?
+
+p
+27. How do you take back up for only jobs? excluding WS?
+
+
+28. How do you set up distributed builds?
+	using master/slave
+
+29. How many slave nodes you have?
+
+---end---
+
+30. What is a label?
+    Label is a virtual name for one or more slave nodes using which we can tie a particular jenkins job to always run on a pariticular machine (Usually which has jdk6 or jdk8 or windows machine...etc.)
+
+
+31. what kind of problems you faced with your jenkins so far?
+        - Our Master server became slow. So to distribute the load, I implemented master/slave concept and today our builds are running in 4 slave nodes.
+        - Regular compile / deployment issues.
+		- Diskspace issues.
+
+p
+32. Suddenly my Jenkins instance became slow. What steps do you take to improve the performance?
+		- clean up old jobs. may be by using shelve plugin
+		- implement master/slave distributed concept.
+		- may be improve the computing power for ex: RAM 	
+			and CPU
+		- Make sure your Master doesn't run any jobs. Just 
+			keep it for serving jenkins trafic and schedule 
+			all your builds in slave nodes.
+
+33. how much you rate yourself in jenknins?
+
+34. Do you have experience with .Net builds?
+
+p
+35. How do you upgrade jenkins?
+	- take a test machine
+	- install the same old version of jenkins in the 
+	  test machine.
+	- copy .jenkins from old jenkins to test machine and bring the jenkins server up in test machine.
+	- deploy the new war file to test machine.	
+	- test few builds randomly in test Jenkins to see if everything works well as old jenkins.
+	-  finally repeat the same steps in production/original 
+		server.
+
+36. Can you name few Jenkins Features? 
+    - Jenkins is process improvment tool
+    - using jenkins we can compile, run tests, build the code and deploy efficiently by continuously integrating users changes with existing application.
+    - we can generate graps, statistics for our builds and test cases,
+    - jenkins provides fast feed back when some thing goes wrong.
+    - Jenkins is extensible coz it is plugin based and rich in features. 
+    - jenkins can act as a nice reporting tool. it sends test case and any other report in html format with some nice colors.
+    - helps to deliver the code to production very quickly with quality code by running the test cases.
+    - allows us to run builds in parellel. so builds can run faster.
+    - allows us to run different builds with different confiugrations seemlesly without much configuration complexity.
+
+37. How do you setup Jenkins from scratch?
+
+38. What are the prerequisites for Jenkins?
+
+39. how do you deploy an application in tomcat?
+    can you explain how the deployment happens for your 
+	project?
+        - we build war file as a final artifact
+        - we have shell script for deployment.
+		- It checks if tomcat/target machine is up and 
+			running and has enough free disk space
+        - it does shutdown the server 
+        - copies the war file to webapps location
+        - starts the server.
+		- It also sends the email notifications to all users
+
+40. What is the difference between web server and application server?
+	web server serves static content: ex..
+		html
+		images
+		javascript
+	application server serves dynamic content:
+		search results
+		date conversion
+		weather application
+
+41. What is parameterised build job? How do you set it up?
+
+42. What is build pipeline? have you created build pipelines?
+
+43.
+How do you set up the crontab?
+can you explain crontab syntax?
+how to create/remove crontabs?
+===========
+1.
+Create a new crontab:
+$ crontab -e
+
+2.
+List all crontabs available
+$ crontab -l
+
+3. Remove a crontab
+$ crontab -r
+
+4.
+Crontab Syntax:
+Min   Hour  DOM   Month  DOW
+0-59  0-23  1-31  1-12   0-7 
+
+ex:
+everyday at 12:00 am, Monday to Friday
+00 12 * * 1-5
+
+
+
+scp syntax:
+===========
+sshpass -p "gamut" scp gamutkart.war gamut@172.17.0.2:/home/gamut/Distros/apache-tomcat-8.5.11/webapps
+
+
