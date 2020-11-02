@@ -1,0 +1,1 @@
+https://dzone.com/articles/setting-ssl-tomcat-5-minutes
