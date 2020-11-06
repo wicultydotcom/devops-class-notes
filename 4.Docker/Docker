@@ -292,15 +292,10 @@ Updating memory of an existing container
 $ docker run -it --cpus="2" --name jenkins-server ubuntu /bin/bash
 $ docker upddate --cpus="2" jenkins-server
 
---> weekend-7:00 batch
-
 # Push a container in sleep mode
 $ docker pause db-server1
 $ docker unpause db-server1
 
---> weekend-8:30 batch
-
---> Jenkins
 
 DAY-4:
 # Docker Images
@@ -375,7 +370,8 @@ Syntax: $ docker commit <container-name> <image-name>
 
 Note: Now you have succussfully containerized your application and published the iamge to DockerHub. Customers can spin millions of new containers using the above docker image.
 
-Note: To verify your image as an user, create a container as shown below. Remove existing image that you have created so that you can abserve image download from Docker hub clearly. (to remove the image.. $ docker rmi nageshvkn/nginx-img)
+Note: To verify your image as an user, create a container as shown below. Remove existing image that you have created so that you can abserve image download from Docker hub clearly. (to remove the image.. $ docker rmi nageshvkn/nginx-img) (Note: For now start nginx server manually using $ service nginx start as this is not automated yet. will be taken care in the next project)
+	
 	$ docker run -it nageshvkn/nginx-img /bin/bash
 
 - Launch the application to test if application is configured along with dependencies.
@@ -391,7 +387,7 @@ $ sudo service nginx status
 
 Note:
 uninstall nginx using below comamnd
-$ sudo apt-get purge nginx nginx-common
+$ sudo apt-get remove nginx nginx-common
 
 
 
@@ -407,7 +403,7 @@ DAY-6:
 	--> 'gamutgurus' directory is called "context" or "build context".
 		It contains the code, files or other data that you want to include in the 
 		image.
-	
+		
 	- Write Dokckerfile:
 		FROM ubuntu:16.04
 		MAINTAINER "info@gamutgurus.com"
