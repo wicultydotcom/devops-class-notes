@@ -1,0 +1,37 @@
+#
+1.) Create a new Bootstrap token and construct worker-node join command
+$ kubeadm token create --print-join-command
+
+Output:
+sudo kubeadm join 10.128.0.18:6443 --token 6fy33p.l2b4am7ibevz1ye8 --discovery-token-ca-cert-hash sha256:de57d9e08877db501a8b503db3ee91596f8f5657878c3087bc0343ece7df3eb2
+
+
+Optional:
+=========
+#
+2.) List existing 'Bootstrap Tokens' and 'discovery token ca certification hash value' & Construct worker node join command
+
+Example Syntax:
+kubeadm join <MASTER-END-POINT> --token <Token> --discovery-token-ca-cert-hash sha256:<hash-value>
+
+1. List <Token>
+$ kubeadm token list
+
+Output: 0isp8p.by0mwcklmnqpdbq1
+
+2. List discovery token ca cert <hash-value>
+$ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+
+Output: 1155f6468f92d60886f72a3ada57ac97edcac1227e8af6b0b1adeda9d9305824
+
+
+
+Know about your cluster:
+=========================
+3. Check kubernetes <MASTER-END-POINT>
+$ kubectl cluster-info
+
+Output: Kubernetes master is running at https://10.128.0.7:6443
+
+Example:
+kubeadm join 10.128.0.7:6443 --token 0isp8p.by0mwcklmnqpdbq1 --discovery-token-ca-cert-hash sha256:1155f6468f92d60886f72a3ada57ac97edcac1227e8af6b0b1adeda9d9305824

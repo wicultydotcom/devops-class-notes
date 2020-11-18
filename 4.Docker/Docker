@@ -301,7 +301,7 @@ DAY-4:
 # Docker Images
 =================
 Agenda:
-	- Understand docker Images and application
+	- Understand docker Images and application containerization
 	- Advantages of Docker Images
 	- Create docker Image for your application
 	- Share/publish your Image
@@ -320,12 +320,6 @@ e. No need to live with complex, redundant configurations. You can create dispos
 f. You can leverage/utilizes local machines's computing power when you need to test your code on multiple machines, instead of waiting for DevOps team to supply or wasting extra computing power. you already have 500GB, 16GB RAM right? are you utilising it? NO! then why again you need extra hardware?
 g. You can create new environments within few minutes (ex: create new performance testing environment within few minutes before the release)
 
-
-# Listing docker images
-- $ docker image ls
-
-- Images live in '/var/lib/docker/image/overlay2/imagedb/content/sha256'
-- Containers live in '/var/lib/docker/containers'
 
 
 # Building our own Image
@@ -439,9 +433,7 @@ Note: Building the image if 'Dockerfile' has different name.
 
 #
 Testing Image
-
-
-# Remove the local image so that it will be downloaded from Docker Hub.
+Remove the local image so that it will be downloaded from Docker Hub.
 	$ docker rmi nageshvkn/nginx-image (OR)
 	$ docker image rm nageshvkn/nginx-image
  
@@ -450,6 +442,13 @@ Testing Image
 
 # Verify if nginx is running from the container.
 	$ http://172.17.0.2:80
+--
+
+# Listing docker images
+- $ docker image ls
+
+- Images live in '/var/lib/docker/image/overlay2/imagedb/content/sha256'
+- Containers live in '/var/lib/docker/containers'
 
 	
 #
@@ -482,7 +481,7 @@ DAY-7:
 #
 Docker Image layers
 =========================
-- Checking the history of our docker image
+# Checking the history of our docker image
 	$ docker history <Image-Id>
 
 # Build image without using build cache	
@@ -504,23 +503,6 @@ Docker Image layers
 		Bootfs:
 		    cgroups, namespace, lxc, devicemapper/aufs..etc.
 		Kernel
-
-Interview Notes:
-===============
-#
-Docker Benefits:
-=================
-1. Portability: 
-	ship environments from one type of infrastructure to another without building up new VMs and tearing down the old ones.
-
-2. Quick deployment/Teardown:
-	With a single command, you can spin up new containers or tear down existing ones. If you want to clone a new VM, you are looking at waiting for close to or over a few hours. With Docker, it will take a few minutes to achieve what you need.
-
-3. Consistency:
-	No more of the "works on my machine!" excuse. As everyone uses the same images to work, consistency is always guaranteed. All the container will act the same in your environment as it will on others.
-
-4. Managing infrastructure-like code:
-When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
 
 Volumes:
 ===============
@@ -553,11 +535,14 @@ Crreating Volume with existing directory in the host machine
 # List down all containers which are using a particular volume
 	$ docker ps -a --filter volume=deployment_code
 
-
 #
 Docker Registry
 Docker Repository
-Image tags
+Image
+tags
+
+
+--wkend-11am--
 
 DAY-8:
 Gamutkart Real-time application
@@ -602,5 +587,24 @@ Can you explain how you have implememnted Docker for your application?
 
 #
 	Docker and Jenkins Integration
+
+
+Interview Notes:
+===============
+#
+Docker Benefits:
+=================
+1. Portability: 
+	ship environments from one type of infrastructure to another without building up new VMs and tearing down the old ones.
+
+2. Quick deployment/Teardown:
+	With a single command, you can spin up new containers or tear down existing ones. If you want to clone a new VM, you are looking at waiting for close to or over a few hours. With Docker, it will take a few minutes to achieve what you need.
+
+3. Consistency:
+	No more of the "works on my machine!" excuse. As everyone uses the same images to work, consistency is always guaranteed. All the container will act the same in your environment as it will on others.
+
+4. Managing infrastructure-like code:
+When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
+
 
 
