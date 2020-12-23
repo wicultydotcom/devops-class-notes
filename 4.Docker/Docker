@@ -542,8 +542,6 @@ Image
 tags
 
 
---wkend-11am--
-
 DAY-8:
 Gamutkart Real-time application
 ============================
@@ -605,6 +603,4 @@ Docker Benefits:
 
 4. Managing infrastructure-like code:
 When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
-
-
 

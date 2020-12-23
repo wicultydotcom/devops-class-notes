@@ -1,0 +1,38 @@
+1. VM Creation
+
+2. Quick walk-through of Ubuntu OS
+
+Linux Basic Commands:
+-----------------------
+Reference:
+- https://www.hostinger.in/tutorials/linux-commands
+- https://www.guru99.com/unix-linux-tutorial.html
+- https://www.tutorialspoint.com/unix/index.htm
+
+
+3. Shell
+
+
+pwd
+
+cd
+
+ls
+
+Shell/Terminal
+
+cat
+
+cp
+
+mv
+
+mkdir
+
+rmdir
+
+rm
+
+touch
+
+

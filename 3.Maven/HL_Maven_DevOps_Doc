@@ -14,36 +14,29 @@ What is Maven? Why we need a build tool?
 
 #4
 Installation
-	- Download JDK 1.8(jdk-8u251-linux-x64.tar.gz) and extract it to your favourite location
-	        Download URL - https://www.oracle.com/in/java/technologies/javase/javase-jdk8-downloads.html
-	- Download lastest Maven(apache-maven-3.6.3-bin.tar.gz) and extract it to your favourite 
-	  location
-	        Download URL - https://maven.apache.org/download.cgi
-	- Setup 'JAVA_HOME' Envi:qronment variable for Maven to locate JDK.
-	- Setup 'M2_HOME' for PATH variable
-	- Setup 'PATH' to run jdk and maven commands from any directory in the system.
-		1. JAVA_HOME
-		2. M2_HOME
-		3. PATH
+---
+Maven is developed in Java. So to run maven we need to  have JDK installed.
 
-Installing JDK and Maven:
-=======================
-  A. open $USER_HOME/.bashrc
-  
-  B. create below Environment variables
-	export M2_HOME=/home/gamut/mavensoftwares/apache-maven-3.3.9
-	export JAVA_HOME=/home/gamut/mavensoftwares/jdk1.8.0_121
+JDK Installation
+--
+$ sudo apt-get update
+$ sudo apt-get install openjdk-8-jdk
 
-	export PATH=$M2_HOME/bin:$JAVA_HOME/bin:$PATH
+Maven Installation
+--
+$ sudo apt-get update
+$ sudo apt-get install maven
 
-Load .bashrc using below command or open new ternimial
-	$ source .bashrc
- 
-Verify Installation
-	$ javac -version
-	$ mvn --version
+Check The installations:
+--
+java -version
+mvn -version
 
-DAY-2:
+Check The installations path:
+--
+which java
+which mvn
+
 
 #5 TEST YOUR KOWLEDGE
 Build and Deployment E2E work-flow and basics
@@ -110,7 +103,7 @@ $ mvn install - command executes below "build life cycle phases" automatically.
 		prepares project with initial pre-
 		requisites ex: creating necessary directory structure (i.e. target directory)
 	- validate
-		validate project's folder structure		
+		validates project's folder structure		
 	- compile
 		compiles "main" java code.
 	- test-compile
@@ -122,7 +115,6 @@ $ mvn install - command executes below "build life cycle phases" automatically.
 	- install
 		copy built artifacts i.e jar/war file into local repository $USER_HOME/.m2
 		folder.
-
 
 #
 Verify Built artifacts:
@@ -179,9 +171,9 @@ Maven repositories
 	- Private ( You can setup using Nexus / Jfrog-atifactrory tool )
 	- Local (.m2)
 
-#13
-	$ mvn deploy (uploads jar files to private (nexus) repository)
 
+#13
+	$ mvn deploy (uploads jar files to private (nexus/artifactory) repository)
 
 #14
 "mvn clean" & Build types

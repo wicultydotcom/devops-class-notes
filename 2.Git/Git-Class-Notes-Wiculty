@@ -36,6 +36,7 @@ Note: If you want to skip the staging, you need to commit all pending changes.
 git show <SHA>
 git show b85a6e123
 
+
 #
 - Git Commit structure
 	SHA value / commit ID
@@ -45,10 +46,6 @@ git show b85a6e123
 	 
 # How SHA is generated?
 SHA / Version / Revison / Commit Id
-
---7:00 AM weekend batch--
-1. VM creations
-2. Vim editor shortcuts
 
 #
 Creating remote repository in github
@@ -103,12 +100,12 @@ $ git config --global credential.helper store
 	$ git log
 
 #Qn.
-Show me all commits made by user "Ram" AND has a commit message "math function" in it.
+Show me all commits made by user "harry" AND has a commit message "math function" in it.
 
-$ git log --author="Ram" --grep="math function"
+$ git log --author="harry" --grep="math function"
+
 
 # GIT Commands
-
 1.  
 # See the content change of a file which is in 'source' area
 $ git diff Login.java
@@ -128,7 +125,8 @@ $ git show 123abc456
  
 3. Renaming a file/folder
 	A.) git mv Login.java Login1.java
-		git commit -m "rename Login"		
+	    git commit -m "rename Login"
+	    git push		
 Note:
 Git will carry the history of old file to new file. To check complete history..
 	$ git log --follow Login1.java
@@ -140,6 +138,7 @@ undo/revert local changes from source area
 
 Unstage the changes from STAGE area
 	$ git reset HEAD LoginWeb.java
+
 
 
 # BRANCHING
@@ -172,12 +171,7 @@ Unstage the changes from STAGE area
         $ git branch -d dev_1.2.3
         $ git push -d origin dev_1.2.3       
 
-Note: How do you restore a branch? how do you identify the sha value. more about 'reflog'
-???
 
-
-Merging:
-=========
 MERGING:
 =================
 
@@ -231,6 +225,7 @@ If two users modify the same file in source and target branches and if the same 
 - git commit (after compilation and some z sanity testing)
 - git push
 
+
 #	
 git remote
 	PULL
@@ -238,6 +233,8 @@ git remote
 	
 	PUSH
 	CLONE
+#
+How to push a particular commit to remote?
 
 NOTES:
 SVN & Git differences:
@@ -257,7 +254,7 @@ Git has staging area. Users can leverage this staging area to stage/save all the
 Since git is distributed in nature, almost all transactions happen locally in the client machine and hence less overhead on the server so git is faster.
 
 3A.
-Users are free to create any no. branches in Git. where as in svn, all branches reside in server side, so may cause svn to be overloaded with multiple requests.
+Users are free to create any no. branches in Git. where as in svn, all branches reside in server side, so you may have multiple branches unnecessarily in SVN Remote.
 
 4.
 Git seems to be good with merging.
