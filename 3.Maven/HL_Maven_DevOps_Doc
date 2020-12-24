@@ -22,10 +22,19 @@ JDK Installation
 $ sudo apt-get update
 $ sudo apt-get install openjdk-8-jdk
 
+JDK Un-Installation
+--
+$ sudo apt-get remove openjdk*
+
 Maven Installation
 --
 $ sudo apt-get update
 $ sudo apt-get install maven
+
+Maven Un-Installation
+--
+$ sudo apt-get remove maven
+
 
 Check The installations:
 --
@@ -90,7 +99,7 @@ Building the maven project:
 #
 Clone the code from Git Or create your own Project using below Maven command
    Clone:
-	$ git clone https://github.com/nageshvkn/flipkart.git
+	$ git clone https://github.com/nageshvkn/iflipkart.git
         
 #
 Building the project using Maven. Use below command.
@@ -150,30 +159,6 @@ Artifact path in local repository .m2
 - Package naming convention:
 	artifactId-version.jar/war
 
-
-DAY-4:
-#11:	
-Maven has "Automatic Dependency resolution" feature
-	
-	- Direct dependency
-	- Transitive dependency (A -> B, B -> C,  A -> B & C)
-	  ( B is direct dependency for A and C is Transitive dependecy for A)
-	  ( To compile AppTest.java, we need Junit.jar. So Junit.jar becomes direct dependency.
-	    To execute Junit.jar, we need hamcrest.jar. So hamcrest.jar becomes transitive 
-	    dependency ) 
-
-
-Maven way of dependency addition, detection from different repositories.
-
-#12
-Maven repositories
-	- Central
-	- Private ( You can setup using Nexus / Jfrog-atifactrory tool )
-	- Local (.m2)
-
-
-#13
-	$ mvn deploy (uploads jar files to private (nexus/artifactory) repository)
 
 #14
 "mvn clean" & Build types
@@ -313,14 +298,6 @@ Explain Maven Life cycle phases:
 		test	     - executes test cases and generates reports
 		package		 - creates jar/war file
 		install		 - copies jar/war file into local repository i.e ~$USER_HOME/.m2
-
-
-Qns:
-1. How do you continue the build even after compilation failures.
-        for Main & Test
-failOnError=true
-       
-2. Maven & ANT comparison
 
 
 
