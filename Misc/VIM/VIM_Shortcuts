@@ -1,0 +1,76 @@
+open a file with vim editor
+	vim <file>
+
+vim -O file1 file2
+	ctrl+ww --> switch between windows
+ 	:qa     --> quiet all windows
+	:wqa	--> save andrunning quiet all windows
+
+
+i - insert to start edit
+esc - normal mode
+
+show line numbers:
+	:set number
+
+remove line numbers:
+	:set nonumber
+
+go to a line:
+	:20
+
+dd - delete a line
+u - undo
+ctrl+r - redo
+
+yy - copy a line
+p  - paste
+
+shift+d - to delete entire line from cursor point
+
+shift+g - go to last line of a file
+gg - go to first line of a file
+
+L - go to last line of current page
+H - go to first line of current page
+M - go to middle of the page
+
+:w - save your work
+:wq - save and quit
+:x - save and quit
+
+0 - go to first character of current line
+$ - got to end character of current line
+w - move word by word
+
+delete a char: x
+delete a word: dw
+[to repeat the delete press "." ]
+
+%d --> delete all content in a file
+
+/string --> search a string
+[ n --> search next string in forward direction
+  N --> search next string in backward direction ]
+
+find and replace:
+:% s/war/jar/g (all occurences)
+:% s/war/jar/gc (one by one interactively)
+
+shift+d --> delete all from cursor point
+
+ctrl+f = next page / scroll page by page in forward direction
+ctrl+b = previous page / scroll page by page in backward direction
+
+=================
+If you want to configure something permanently for vim editor, create $USER_HOME/.vimrc and define your configurations.
+
+Examples:
+==========
+set number
+set hlsearch
+set incsearch
+set tabstop=4
+
+
+

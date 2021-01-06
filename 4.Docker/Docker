@@ -26,6 +26,7 @@ Supported Platforms -
 		Rackspace Cloud
 		Google compute Engine..etc.
 		Azure
+		Digital Ocean
 
 Note:
 Linux containers can be created on Windows and OS-X.
@@ -49,31 +50,17 @@ Requirements Check:
 
 Installation Steps:
 =====================	
-# Update apt-get cache
-	$ sudo apt-get update
+$ curl -fsSL https://get.docker.com -o get-docker.sh
+$ chmod +x get-docker.sh
+$ sudo ./get-docker.sh
 
-# Install docker dependencies
-	$ sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-
-# Add GPG key to apt repository
-	$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-# Setup Stable repository (Add docker download URL manually to apt cache)
-	$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-	
-# Update apt package index:
-	$ sudo apt-get update
-	
-# Install Latest version of Docker
-	$ sudo apt-get install docker-ce
-	
 #
 Installation Check
 sudo docker --version
 
 #
 uninstall docker:
-$ sudo apt-get remove docker-ce
+$ sudo apt-get purge docker-ce docker-ce-cli containerd.io
 $ sudo rm -rf /var/lib/docker (Removes all containers and images)
 
 
@@ -112,36 +99,44 @@ ubuntu : Is an image and also called as "stock image" or "base image".
 
 
 # How to setup SSH for containers
-Setup SSH in the container so that other machies can communicate with it        
+Setup SSH in the container so that other machies can communicate with it.    
 
 - Create a container using below command
         $ docker run -it ubuntu /bin/bash
+        
+- Install SSH using below commands
+        $ apt-get update
+        $ apt-get install openssh-server
+        
+- Start SSH server
+        $ service ssh status
+        $ service ssh start
+                
+- Create an User and set the Password
+        $ useradd -md /home/wiculty -s /bin/bash wiculty
+        $ passwd wiculty
+        
 - Find it's IP address
-        $ hostname -i ( ex: 172.17.0.2 )
+        $ hostname -I ( ex: 172.17.0.2 )
 
 - Try to connect to 172.17.0.2 from the host machine.
-  You will get below error as the container doesn't have ssh server running.
-	$ ssh gamut@172.17.0.2
+        $ ssh gamut@172.17.0.2
 	
-- Now, Install ssh server using below commands
-$ apt-get update
-$ apt-get install openssh-server
+Note: Check below SSH commands
+        $ service ssh stop --> Stops the SSH server
+        $ service ssh restart --> Restarts the SSH server
+        
+# Enabling root access to ubuntu
+By default In ubuntu, root access would be disabled. To Enable root user over ssh for ubuntu containers, we need to change below file as shown below.
+        File: /etc/ssh/sshd_config
+        Change: Go to "#Authentication" section. Add "PermitRootLogin yes"
+       
+Once this change is done, restart the ssh server usign "service ssh restart".
 
-- Start the server
-$ service ssh start (other ssh commands: status/stop/restart)
-
-- Create an user and set up password
-$ useradd -m -d /home/gamut -s /bin/bash gamut
-$ passwd gamut
-	
-- Now try to connect to the container using ssh from the host machine
-  The connection should be succussful as the SSH is installed and the server is running.
-$ ssh gamut@172.17.0.2
-
-# To Enable root user over ssh for ubuntu containers, we need to change below file.
-  Once this change is done, restart the ssh server (service ssh restart) and you can connect to the container using 'root' user.
-Add below line under "# Authentication:" in "/etc/ssh/sshd_config"
-	PermitRootLogin yes
+Now, you can access the machine using root user. Test using below commands.
+Before you access using root user, setup the password using "$ passwd root".
+        $ ssh root@172.17.0.2
+        
 
 # 
 Manage/Run Docker as a non-root user
@@ -167,6 +162,7 @@ Run docker command without 'sudo'
 
 	6. Remove user from the group
 		$ sudo gpasswd -d gamut docker	(remove)
+
 #
 Shotdown a container
 "exit" to stop the container
@@ -174,7 +170,8 @@ Shotdown a container
 #
 Login to a stopped container
 	$ docker start
-	$ docker attach
+	$ docker attach 
+OR
         $ docker start -ai mystifying_tu
 
 # List all containers(stopped and running)
@@ -190,7 +187,7 @@ $ sudo docker cotainer ls
 $ docker ps
 
 # List Stopped containers only
-$ docker container ls -f status=exited (Where Status can be exited/running)
+$ docker rm docker container ls -f status=exited (Where Status can be exited/running)
 
 
 # "docker container ls" command output shows
@@ -210,6 +207,7 @@ Note: Two containers can't have the same name.
 # Rename a container
 $ docker rename db-server3 db-server-name3
 
+
 # Deleting a container by giving it's name or ID
 $ docker rm ID/name
 
@@ -222,8 +220,6 @@ $ docker rm ID/name
 $ docker rm -f $(docker container ls -q)
 $ docker rm -f $(docker ps -q)
 
-# list stopped containers only
-$ docker container ls -f status=exited
 
 # Starting a stopped container
 	sudo docker start gamut
@@ -232,6 +228,8 @@ $ docker container ls -f status=exited
 
 # Run a linux command remotely in a container Or Get an independent terminal from a container remotely (from Host)
 $ docker exec -it tomcat-server /bin/bash  
+$ docker exec -it tomcat-server ps -ef
+
 
 # Stoping a container from 'host machine'
         - docker stop dgamut (Gracefully stop the container)
@@ -269,6 +267,8 @@ Examples:
 # List all container names
 $ docker inspect --format "{{.Name}}" $(docker ps -a -q) | tr -d '/'
 
+
+--daily 8:30 pm batch--
 
 STATS:
 ==========
@@ -542,8 +542,6 @@ Image
 tags
 
 
---wkend-11am--
-
 DAY-8:
 Gamutkart Real-time application
 ============================
@@ -605,6 +603,4 @@ Docker Benefits:
 
 4. Managing infrastructure-like code:
 When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
-
-
 
