@@ -26,10 +26,9 @@ Supported Platforms -
 		Rackspace Cloud
 		Google compute Engine..etc.
 		Azure
-		Digital Ocean
 
 Note:
-Linux containers can be created on Windows and OS-X.
+Linux containers can be created on Windows and OS X.
 HOW?- Windows & Mac Docker installers contain a tiny Linux virtual machine.
 So, Docker creates linux container on top of this tiny Linux VM.
 
@@ -50,17 +49,31 @@ Requirements Check:
 
 Installation Steps:
 =====================	
-$ curl -fsSL https://get.docker.com -o get-docker.sh
-$ chmod +x get-docker.sh
-$ sudo ./get-docker.sh
+# Update apt-get cache
+	$ sudo apt-get update
 
+# Install docker dependencies
+	$ sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+# Add GPG key to apt repository
+	$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# Setup Stable repository (Add docker download URL manually to apt cache)
+	$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	
+# Update apt package index:
+	$ sudo apt-get update
+	
+# Install Latest version of Docker
+	$ sudo apt-get install docker-ce
+	
 #
 Installation Check
 sudo docker --version
 
 #
 uninstall docker:
-$ sudo apt-get purge docker-ce docker-ce-cli containerd.io
+$ sudo apt-get remove docker-ce
 $ sudo rm -rf /var/lib/docker (Removes all containers and images)
 
 
@@ -98,45 +111,33 @@ ubuntu : Is an image and also called as "stock image" or "base image".
 6. cd / && pwd && ls
 
 
-# How to setup SSH for containers
-Setup SSH in the container so that other machies can communicate with it.    
+# SSH setup for containers
+Setup SSH in the containers so that they can communicate with each other
 
-- Create a container using below command
-        $ docker run -it ubuntu /bin/bash
-        
-- Install SSH using below commands
-        $ apt-get update
-        $ apt-get install openssh-server
-        
-- Start SSH server
-        $ service ssh status
-        $ service ssh start
-                
-- Create an User and set the Password
-        $ useradd -md /home/wiculty -s /bin/bash wiculty
-        $ passwd wiculty
-        
-- Find it's IP address
-        $ hostname -I ( ex: 172.17.0.2 )
+- Create two containers
+		172.17.0.2
+		172.17.0.3
+- Try to connect to 172.17.0.3 from 172.17.0.2 using below command. You will get an error
+	$ ssh gamut@172.17.0.3 (you won't be able to conect by default)
 
-- Try to connect to 172.17.0.2 from the host machine.
-        $ ssh gamut@172.17.0.2
+- Install ssh server
+$ apt-get update
+$ apt-get install openssh-server
+
+- Start the server
+$ service ssh start (status/stop/restart)
+
+
+- Create an user and set up password
+$ useradd -m -d /home/gamut -s /bin/bash gamut
+$ passwd gamut
 	
-Note: Check below SSH commands
-        $ service ssh stop --> Stops the SSH server
-        $ service ssh restart --> Restarts the SSH server
-        
-# Enabling root access to ubuntu
-By default In ubuntu, root access would be disabled. To Enable root user over ssh for ubuntu containers, we need to change below file as shown below.
-        File: /etc/ssh/sshd_config
-        Change: Go to "#Authentication" section. Add "PermitRootLogin yes"
-       
-Once this change is done, restart the ssh server usign "service ssh restart".
+- Connect to the container using ssh from 172.17.0.2 or any other machine.
+$ ssh gamut@172.17.0.3
 
-Now, you can access the machine using root user. Test using below commands.
-Before you access using root user, setup the password using "$ passwd root".
-        $ ssh root@172.17.0.2
-        
+# Enable root user over ssh
+Add below line under "# Authentication:" in "/etc/ssh/sshd_config"
+	PermitRootLogin yes
 
 # 
 Manage/Run Docker as a non-root user
@@ -162,7 +163,6 @@ Run docker command without 'sudo'
 
 	6. Remove user from the group
 		$ sudo gpasswd -d gamut docker	(remove)
-
 #
 Shotdown a container
 "exit" to stop the container
@@ -170,8 +170,7 @@ Shotdown a container
 #
 Login to a stopped container
 	$ docker start
-	$ docker attach 
-OR
+	$ docker attach
         $ docker start -ai mystifying_tu
 
 # List all containers(stopped and running)
@@ -180,14 +179,14 @@ $ docker ps -a
 
 
 # List given no. of containers
-$ docker ps -a -n2
+$ docker ps -a -n1
 
 # List running containers only
 $ sudo docker cotainer ls
 $ docker ps
 
 # List Stopped containers only
-$ docker rm docker container ls -f status=exited (Where Status can be exited/running)
+$ docker container ls -f status=exited (Where Status can be exited/running)
 
 
 # "docker container ls" command output shows
@@ -207,7 +206,6 @@ Note: Two containers can't have the same name.
 # Rename a container
 $ docker rename db-server3 db-server-name3
 
-
 # Deleting a container by giving it's name or ID
 $ docker rm ID/name
 
@@ -220,21 +218,26 @@ $ docker rm ID/name
 $ docker rm -f $(docker container ls -q)
 $ docker rm -f $(docker ps -q)
 
+# list stopped containers only
+$ docker container ls -f status=exited
 
 # Starting a stopped container
 	sudo docker start gamut
 	sudo docker stop aa3f365f0fdocker4e
 	sudo docker restart gamut
 
+# Attaching to a running container
+	docker attach gamut
+	docker attach b1b1c8dc1939
+
+
 # Run a linux command remotely in a container Or Get an independent terminal from a container remotely (from Host)
 $ docker exec -it tomcat-server /bin/bash  
-$ docker exec -it tomcat-server ps -ef
-
 
 # Stoping a container from 'host machine'
         - docker stop dgamut (Gracefully stop the container)
 	- docker kill dgamut (Forcibly stop the container)
-        
+
 # Shortcut Keys
 	Ctrl + p + q - push a running container in background mode.
 	Ctrl + d -  short cut to 'stop' a container.
@@ -244,8 +247,8 @@ $ docker exec -it tomcat-server ps -ef
 	$ docker top <container-name>
 
 
-# Show last 2 containers (stopped/running)
-	$ docker ps -a -n2
+# Show last 4 containers (stopped/running)
+	$ docker ps -n2
 
 # Create a container in a background mode ( without termial access ) 
 $ docker run -it -d ubuntu /bin/bash
@@ -257,7 +260,7 @@ $ docker run -it -d ubuntu /bin/bash
 
   Ex: image name, IP, Memory details, hostname ..etc
 	 
-Examples:
+	 Examples:
 	$ docker inspect <container-name>
 	$ docker inspect -f '{{.Config.Hostname}}' tomcat-server1
 	$ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' tomcatserver1
@@ -267,8 +270,6 @@ Examples:
 # List all container names
 $ docker inspect --format "{{.Name}}" $(docker ps -a -q) | tr -d '/'
 
-
---daily 8:30 pm batch--
 
 STATS:
 ==========
@@ -290,18 +291,20 @@ Updating memory of an existing container
 	
 # CPU Allocation
 $ docker run -it --cpus="2" --name jenkins-server ubuntu /bin/bash
-$ docker upddate --cpus="2" jenkins-server
+$ docker update --cpus="2" jenkins-server
+
 
 # Push a container in sleep mode
 $ docker pause db-server1
 $ docker unpause db-server1
 
+--8:30 weekend--
 
 DAY-4:
 # Docker Images
 =================
 Agenda:
-	- Understand docker Images and application containerization
+	- Understand docker Images and application
 	- Advantages of Docker Images
 	- Create docker Image for your application
 	- Share/publish your Image
@@ -320,6 +323,12 @@ e. No need to live with complex, redundant configurations. You can create dispos
 f. You can leverage/utilizes local machines's computing power when you need to test your code on multiple machines, instead of waiting for DevOps team to supply or wasting extra computing power. you already have 500GB, 16GB RAM right? are you utilising it? NO! then why again you need extra hardware?
 g. You can create new environments within few minutes (ex: create new performance testing environment within few minutes before the release)
 
+
+# Listing docker images
+- $ docker image ls
+
+- Images live in '/var/lib/docker/image/overlay2/imagedb/content/sha256'
+- Containers live in '/var/lib/docker/containers'
 
 
 # Building our own Image
@@ -364,8 +373,7 @@ Syntax: $ docker commit <container-name> <image-name>
 
 Note: Now you have succussfully containerized your application and published the iamge to DockerHub. Customers can spin millions of new containers using the above docker image.
 
-Note: To verify your image as an user, create a container as shown below. Remove existing image that you have created so that you can abserve image download from Docker hub clearly. (to remove the image.. $ docker rmi nageshvkn/nginx-img) (Note: For now start nginx server manually using $ service nginx start as this is not automated yet. will be taken care in the next project)
-	
+Note: To verify your image as an user, create a container as shown below. Remove existing image that you have created so that you can abserve image download from Docker hub clearly. (to remove the image.. $ docker rmi nageshvkn/nginx-img)
 	$ docker run -it nageshvkn/nginx-img /bin/bash
 
 - Launch the application to test if application is configured along with dependencies.
@@ -381,7 +389,7 @@ $ sudo service nginx status
 
 Note:
 uninstall nginx using below comamnd
-$ sudo apt-get remove nginx nginx-common
+$ sudo apt-get purge nginx nginx-common
 
 
 
@@ -397,7 +405,7 @@ DAY-6:
 	--> 'gamutgurus' directory is called "context" or "build context".
 		It contains the code, files or other data that you want to include in the 
 		image.
-		
+	
 	- Write Dokckerfile:
 		FROM ubuntu:16.04
 		MAINTAINER "info@gamutgurus.com"
@@ -433,7 +441,9 @@ Note: Building the image if 'Dockerfile' has different name.
 
 #
 Testing Image
-Remove the local image so that it will be downloaded from Docker Hub.
+
+
+# Remove the local image so that it will be downloaded from Docker Hub.
 	$ docker rmi nageshvkn/nginx-image (OR)
 	$ docker image rm nageshvkn/nginx-image
  
@@ -442,13 +452,6 @@ Remove the local image so that it will be downloaded from Docker Hub.
 
 # Verify if nginx is running from the container.
 	$ http://172.17.0.2:80
---
-
-# Listing docker images
-- $ docker image ls
-
-- Images live in '/var/lib/docker/image/overlay2/imagedb/content/sha256'
-- Containers live in '/var/lib/docker/containers'
 
 	
 #
@@ -481,7 +484,7 @@ DAY-7:
 #
 Docker Image layers
 =========================
-# Checking the history of our docker image
+- Checking the history of our docker image
 	$ docker history <Image-Id>
 
 # Build image without using build cache	
@@ -503,6 +506,23 @@ Docker Image layers
 		Bootfs:
 		    cgroups, namespace, lxc, devicemapper/aufs..etc.
 		Kernel
+
+Interview Notes:
+===============
+#
+Docker Benefits:
+=================
+1. Portability: 
+	ship environments from one type of infrastructure to another without building up new VMs and tearing down the old ones.
+
+2. Quick deployment/Teardown:
+	With a single command, you can spin up new containers or tear down existing ones. If you want to clone a new VM, you are looking at waiting for close to or over a few hours. With Docker, it will take a few minutes to achieve what you need.
+
+3. Consistency:
+	No more of the "works on my machine!" excuse. As everyone uses the same images to work, consistency is always guaranteed. All the container will act the same in your environment as it will on others.
+
+4. Managing infrastructure-like code:
+When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
 
 Volumes:
 ===============
@@ -535,12 +555,11 @@ Crreating Volume with existing directory in the host machine
 # List down all containers which are using a particular volume
 	$ docker ps -a --filter volume=deployment_code
 
+
 #
 Docker Registry
 Docker Repository
-Image
-tags
-
+Image tags
 
 DAY-8:
 Gamutkart Real-time application
@@ -586,21 +605,4 @@ Can you explain how you have implememnted Docker for your application?
 #
 	Docker and Jenkins Integration
 
-
-Interview Notes:
-===============
-#
-Docker Benefits:
-=================
-1. Portability: 
-	ship environments from one type of infrastructure to another without building up new VMs and tearing down the old ones.
-
-2. Quick deployment/Teardown:
-	With a single command, you can spin up new containers or tear down existing ones. If you want to clone a new VM, you are looking at waiting for close to or over a few hours. With Docker, it will take a few minutes to achieve what you need.
-
-3. Consistency:
-	No more of the "works on my machine!" excuse. As everyone uses the same images to work, consistency is always guaranteed. All the container will act the same in your environment as it will on others.
-
-4. Managing infrastructure-like code:
-When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
 
