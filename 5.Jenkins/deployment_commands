@@ -1,0 +1,29 @@
+########################
+#
+Goal:
+1. Create a parameterized build job to deploy the code into multiple environment.
+2. How do you deploy the code into multiple environments using a single Jenkins job.
+########################
+#
+Description:
+1. You need to create parameterized job to test this project as shown below.
+	- Go to Job configuration --> Select "This project is parameterized" --> Create a parameter called "ENVIRONMENT".
+
+2. Select 'Execute Shell' under "Build" Section of you job configuration and paster below commands.
+ 
+
+3. Note: Make sure that you have two machines with IPs (Ex: 172.17.0.3 & 172.17.0.4) as it's deploying into these two machines. If your machines IPs are different provide the same in below commands accordingly.
+########################
+#
+if [ $ENVIRONMENT = "QA" ];then
+
+    sshpass -p "gamut" scp target/gamutgurus.war gamut@172.17.0.3:/home/gamut/Distros/apache-tomcat-8.5.61/webapps
+
+    sshpass -p "gamut" ssh gamut@172.17.0.3 "/home/gamut/Distros/apache-tomcat-8.5.61/bin/startup.sh"
+
+elif [ $ENVIRONMENT = "SIT" ];then
+    sshpass -p "gamut" scp target/gamutgurus.war gamut@172.17.0.4:/home/gamut/Distros/apache-tomcat-8.5.61/webapps
+
+    sshpass -p "gamut" ssh gamut@172.17.0.4 "/home/gamut/Distros/apache-tomcat-8.5.61/bin/startup.sh"
+fi
+
