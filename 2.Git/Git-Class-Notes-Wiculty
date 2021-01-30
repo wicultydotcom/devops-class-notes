@@ -1,6 +1,6 @@
                                         GIT
                                   =================
-                                                                          
+                                                             
 # What is VCS. Why we need VCS.
 	VCS features.
 	
@@ -46,6 +46,7 @@ git show b85a6e123
 	 
 # How SHA is generated?
 SHA / Version / Revison / Commit Id
+
 
 #
 Creating remote repository in github

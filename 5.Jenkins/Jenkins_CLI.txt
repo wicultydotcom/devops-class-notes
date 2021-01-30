@@ -1,5 +1,5 @@
 # Run Jenkins CLI as a particular User
-java -jar jenkins-cli.jar -s http://172.17.0.4:8080/jenkins -auth gamut:11742d94d019f32f25f2a42d1eb76c5771 build gamutkart
+$ java -jar jenkins-cli.jar -s http://172.17.0.4:8080/jenkins -auth gamut:11742d94d019f32f25f2a42d1eb76c5771 build gamutkart
 
 # Generate API token (ex: 11742d94d019f32f25f2a42d1eb76c5771)
 Jenkins Dashboard --> People --> Click on your user --> configure --> under API Token --> Add new token --> Generate & COPY

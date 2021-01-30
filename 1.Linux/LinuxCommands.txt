@@ -36,3 +36,17 @@ rm
 touch
 
 
+----
+AWK
+how do you print a particular line number using awk.
+----
+
+
+Pipe
+apt-get
+Process
+push a process in backgroud mode
+
+
+
+

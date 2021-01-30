@@ -271,6 +271,7 @@ $ docker run -it -d ubuntu /bin/bash
 $ docker inspect --format "{{.Name}}" $(docker ps -a -q) | tr -d '/'
 
 
+
 STATS:
 ==========
 # Display usage statistics of a container
@@ -298,7 +299,6 @@ $ docker update --cpus="2" jenkins-server
 $ docker pause db-server1
 $ docker unpause db-server1
 
---8:30 weekend--
 
 DAY-4:
 # Docker Images
@@ -441,16 +441,16 @@ Note: Building the image if 'Dockerfile' has different name.
 
 #
 Testing Image
-
-
-# Remove the local image so that it will be downloaded from Docker Hub.
+1. Remove the local image so that it will be downloaded from Docker Hub.
 	$ docker rmi nageshvkn/nginx-image (OR)
 	$ docker image rm nageshvkn/nginx-image
  
-# Creating a new container from our image
+2. Creating a new container from our image
 	$ docker run -it --name nginx-container nageshvkn/nginx-img /bin/bash
 
-# Verify if nginx is running from the container.
+Note: start the nginx server manually as it's not fixed yet. It will be fixed in the next topic.
+
+3. Verify if nginx is running from the container.
 	$ http://172.17.0.2:80
 
 	
@@ -504,7 +504,7 @@ Docker Image layers
 		Ubuntu Base Image(rootfs)
 		-
 		Bootfs:
-		    cgroups, namespace, lxc, devicemapper/aufs..etc.
+		    cgroups, namespace, lxc, devicemapper/aufs/overlay..etc.
 		Kernel
 
 Interview Notes:
@@ -556,11 +556,6 @@ Crreating Volume with existing directory in the host machine
 	$ docker ps -a --filter volume=deployment_code
 
 
-#
-Docker Registry
-Docker Repository
-Image tags
-
 DAY-8:
 Gamutkart Real-time application
 ============================
@@ -603,6 +598,16 @@ Can you explain how you have implememnted Docker for your application?
 	$ http://IP:8080/gamutkart
 
 #
-	Docker and Jenkins Integration
+Docker and Jenkins Integration
+1. Create a new Free style project in Jenkins
+2. Configure Git, Maven, Docker Image creation & Environment creation using below.
+        - Configure Git URL under "Source code Management"
+        - Provide Maven's 'install' command under build section
+        - Open 'Execute shell' and type below commands for creating Image and Environment
+                - docker build -t "nageshvkn/gamutkart-img" . (Note: don't forget "." at the                                                                                      end)
+                - ./create-env.sh 10
+
+
+      
 
 

@@ -37,3 +37,5 @@ Note:
 You may get an error something like "Virtualization/VTx" is not enabled. If you get this, go to BIOS settings by pressing F2 or F12 while machine restart. Go to BIOS configurationa and 'enable virtualization'.
 
 
+
+
