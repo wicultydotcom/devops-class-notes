@@ -33,7 +33,7 @@ Note: If you want to skip the staging, you need to commit all pending changes.
 
 
 # Show all the files that are modified as part of a commit (with content)
-git show <SHA>
+git show <Commit Id>
 git show b85a6e123
 
 
@@ -147,7 +147,7 @@ Unstage the changes from STAGE area
 	B. Why and When we create a branch?
 	C. Branching Stratogies
 
-# List all the branches
+# List all active branches in local repository
 	$ git branch
 	
 # Creating a new branch
@@ -226,7 +226,14 @@ If two users modify the same file in source and target branches and if the same 
 - git commit (after compilation and some z sanity testing)
 - git push
 
-
+Note:
+Use below command to find the owner of conflict code. How do you find the user who modified/added conflicted code?
+        - $ git checkout master
+          $ git blame Login.java
+          
+        - $ git checkout dev_1.2.3
+          $ git blame Login.java
+          
 #	
 git remote
 	PULL
@@ -234,8 +241,12 @@ git remote
 	
 	PUSH
 	CLONE
+	
 #
 How to push a particular commit to remote?
+$ git push origin 3160a392f3844d117289e248b5a910c38e646a1f:master
+Syntax: $ git push origin <Commit-ID>:branch
+
 
 NOTES:
 SVN & Git differences:

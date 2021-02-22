@@ -11,19 +11,23 @@ Basics
 #3
 What is Maven? Why we need a build tool?
 
+
 #4
 Installation
 ---
 Maven is developed in Java. So to run maven we need to  have JDK installed.
+
 
 JDK Installation
 --
 $ sudo apt-get update
 $ sudo apt-get install openjdk-8-jdk
 
+
 JDK Un-Installation
 --
 $ sudo apt-get remove openjdk*
+
 
 Maven Installation
 --
@@ -46,7 +50,7 @@ which java
 which mvn
 
 #5 TEST YOUR KOWLEDGE
-Build and Deployment E2E work-flow and basics
+        - Build and Deployment E2E work-flow and basics
 	- What is compilation & why we compile the source code?
 	- Packaging sequence for Java application
 	- What is Build
@@ -69,7 +73,7 @@ java projects which are created by maven, ideally follows below project folder s
 	     | 		|
            java		java
 	    |		 |
-       (group.Id    (group.Id)
+       (group.Id)    (group.Id)
 	  |		|
       App.java	   AppTest.java
 
@@ -83,6 +87,7 @@ pom.xml  - Maven's build file using which we can
 				compilation, test runs, jar/war creation,
 				deployments...etc.
 
+Note: use $ cd flipkart ; tree . commands to see the project structure in tree format 
 
 DAY-3:
 #8
@@ -110,7 +115,8 @@ $ mvn install - command executes below "build life cycle phases" automatically.
 		prepares project with initial pre-
 		requisites ex: creating necessary directory structure (i.e. target directory)
 	- validate
-		validate project's folder structure		
+		validate project's folder structure
+				
 	- compile
 		compiles "main" java code.
 	- test-compile
@@ -158,7 +164,6 @@ Artifact path in local repository .m2
 - Package naming convention:
 	artifactId-version.jar/war
 
-
 DAY-4:
 #11:	
 Maven has "Automatic Dependency resolution" feature
@@ -168,10 +173,10 @@ Maven has "Automatic Dependency resolution" feature
 	  ( B is direct dependency for A and C is Transitive dependecy for A)
 	  ( To compile AppTest.java, we need Junit.jar. So Junit.jar becomes direct dependency.
 	    To execute Junit.jar, we need hamcrest.jar. So hamcrest.jar becomes transitive 
-	    dependency ) 
-
+	    dependency )
 
 Maven way of dependency addition, detection from different repositories.
+
 
 #12
 Maven repositories
@@ -182,17 +187,18 @@ Maven repositories
 #13
 	$ mvn deploy (uploads jar files to private (nexus) repository)
 
-
 #14
-"mvn clean" & Build types
+"mvn clean"
+
+#
+Build types
         - Complete Build
         - Incremental Build
         - Daily Build
         - Nightly Build
 
-
 # Skip test cases
-$ mvn install -DskipTest (skip test cases execution)
+$ mvn install -DskipTests (skip test cases execution)
 $ mvn install -Dmaven.test.skip=true (skips compilation and test case execution)
 
 $ mvn compiler:testCompile (Compiles only testing code)
@@ -205,11 +211,12 @@ Where Maven's coordinates / GAV parameters are helpful?
 	- To decide jar/war name
 	- To define a dependency in pom.xml file.
 
+
 #19
 PROJECT-02: WEB Application Build and Deployment.
 ------------
 Goal: 
-	- Create a project for flipkart web application and perform end-to-end build and deployment
+	- Perform end-to-end build and deployment for flipkart web application
 	- Handling build and deployment for any web application
 
 Steps:
@@ -222,10 +229,7 @@ Steps:
 #
 Clone the code from Git
 	$ git clone https://github.com/nageshvkn/iflipkart.git
-	                               OR
-Create a new project:
-        $ mvn archetype:generate -DgroupId=com.flipkart -DartifactId=flipkart -Dversion=1.0-SNAPSHOT -DinteractiveMode=false -DarchetypeArtifactId=maven-archetype-webapp
-
+	                              
 #
 Building the project using Maven. Use below command.
 	$ mvn install
@@ -238,7 +242,7 @@ $ ls target
 Set-up tomcat for deployment
 - Download tomcat *.tar.gz and JDK.
 - Extract to your favouriate location
-- Make sure JAVA_HOME environment variable is set
+- Make sure that java is installed in the machine
 
 #
 Deploy flipkart.war into tomcat deployment path
@@ -258,14 +262,14 @@ Syntax:
 
 
 #26
-Project:2 (Real-time End-to-End Build and Deployment Process)
+Project:3(Real-time End-to-End Build and Deployment Process)
 =================================
 Goals: 
 - Building the War for large scale real-time kinda application
 - Learning Deployments with a dedicated tomcat Server
 
 Steps:
-------------
+----------
 #
 Install GIT
 $ sudo apt-get update
@@ -303,29 +307,4 @@ We can check this file and if there are any errors/exceptions, we provide this i
 Note: If you want to change the port number, Go to below file and change the port number where you see something like this. ( port="8080" protocol="HTTP/1.1")
 	$ vim $TOMCAT_HOME/conf/server.xml
 
-#
-Interview Notes:
-
-Explain Maven Life cycle phases:
-=============================================
-- When we execute '$ mvn install' command..
-	- By default maven reads 'pom.xml' file and runs the given target(i.e install).
-	  before running 'install' target, It will read GAV paramerters, packaging 
-		attribute for creating jar/war file and also downloads declared dependencies
-		from central/remote repositories. 
-	- According to Maven's build lifecycle, maven executes all required build steps 	  such as:
-		initialize - creates all necessary folder structure
-		validate   - validates project structure		
-		compile	   - compiles main code
-	    test-compile - compiles test code
-		test	     - executes test cases and generates reports
-		package		 - creates jar/war file
-		install		 - copies jar/war file into local repository i.e ~$USER_HOME/.m2
-
-
-Qns:
-1. How do you continue the build even after compilation failures.
-        for Main & Test
-       
-2. Maven & ANT comparison
 

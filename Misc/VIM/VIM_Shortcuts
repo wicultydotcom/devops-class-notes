@@ -6,7 +6,6 @@ vim -O file1 file2
  	:qa     --> quiet all windows
 	:wqa	--> save andrunning quiet all windows
 
-
 i - insert to start edit
 esc - normal mode
 
