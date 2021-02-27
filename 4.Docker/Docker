@@ -49,31 +49,26 @@ Requirements Check:
 
 Installation Steps:
 =====================	
-# Update apt-get cache
-	$ sudo apt-get update
+# To install the Docker, Run belwo commands
+Reference: https://docs.docker.com/engine/install/ubuntu
 
-# Install docker dependencies
-	$ sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+        $ curl -fsSL https://get.docker.com -o get-docker.sh
+        $ sudo sh get-docker.sh
 
-# Add GPG key to apt repository
-	$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-
-# Setup Stable repository (Add docker download URL manually to apt cache)
-	$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-	
-# Update apt package index:
-	$ sudo apt-get update
-	
-# Install Latest version of Docker
-	$ sudo apt-get install docker-ce
 	
 #
 Installation Check
 sudo docker --version
 
 #
+If you would like to use Docker as a non-root user, you should add your user to the “docker” group with below command.
+
+  sudo usermod -aG docker <your-user>
+
+
+#
 uninstall docker:
-$ sudo apt-get remove docker-ce
+$ sudo apt-get purge docker-ce docker-ce-cli containerd.io
 $ sudo rm -rf /var/lib/docker (Removes all containers and images)
 
 
@@ -139,30 +134,6 @@ $ ssh gamut@172.17.0.3
 Add below line under "# Authentication:" in "/etc/ssh/sshd_config"
 	PermitRootLogin yes
 
-# 
-Manage/Run Docker as a non-root user
-------OR------
-Run docker command without 'sudo'
-====================================
-	1. Create the "docker" group
-		$ sudo groupadd docker
-
-	2. Add user to the group
-		$ sudo gpasswd -a gamut docker	(add)
-
-	3. Logout and Login back so that your group membership
-	   is re-evaluated.
-
--- verification and cleanup
-
-	4. Check group existance:
-		$ grep docker /etc/group
-
-	5. Delete the group
-		$ sudo groupdel docker
-
-	6. Remove user from the group
-		$ sudo gpasswd -d gamut docker	(remove)
 #
 Shotdown a container
 "exit" to stop the container
@@ -214,12 +185,14 @@ $ docker rm ID/name
  $ docker rm -f $(docker container ls -a -q)
  $ docker rm -f $(docker ps -a -q)
 
+
 # Delete running containers only
 $ docker rm -f $(docker container ls -q)
 $ docker rm -f $(docker ps -q)
 
+
 # list stopped containers only
-$ docker container ls -f status=exited
+$ docker container ls -a -f status=exited
 
 # Starting a stopped container
 	sudo docker start gamut
@@ -232,11 +205,13 @@ $ docker container ls -f status=exited
 
 
 # Run a linux command remotely in a container Or Get an independent terminal from a container remotely (from Host)
-$ docker exec -it tomcat-server /bin/bash  
+$ docker exec -it tomcat-server ps -ef  
+
 
 # Stoping a container from 'host machine'
         - docker stop dgamut (Gracefully stop the container)
 	- docker kill dgamut (Forcibly stop the container)
+
 
 # Shortcut Keys
 	Ctrl + p + q - push a running container in background mode.
@@ -299,6 +274,7 @@ $ docker update --cpus="2" jenkins-server
 $ docker pause db-server1
 $ docker unpause db-server1
 
+--8:30PM daily--
 
 DAY-4:
 # Docker Images

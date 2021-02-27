@@ -1,0 +1,25 @@
+# 
+Manage/Run Docker as a non-root user
+------OR------
+Run docker command without 'sudo'
+====================================
+	1. Create the "docker" group
+		$ sudo groupadd docker
+
+	2. Add user to the group
+		$ sudo gpasswd -a gamut docker	(add)
+
+	3. Logout and Login back so that your group membership
+	   is re-evaluated.
+
+-- verification and cleanup
+
+	4. Check group existance:
+		$ grep docker /etc/group
+
+	5. Delete the group
+		$ sudo groupdel docker
+
+	6. Remove user from the group
+		$ sudo gpasswd -d gamut docker	(remove)
+
