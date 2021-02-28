@@ -47,7 +47,6 @@ git show b85a6e123
 # How SHA is generated?
 SHA / Version / Revison / Commit Id
 
-
 #
 Creating remote repository in github
 ===============
@@ -100,6 +99,12 @@ $ git config --global credential.helper store
 	$ git log Login.java
 	$ git log
 
+# List all the commits made by an user
+        $ git log --author="harry" 
+        
+# List all the commits based on the commit message
+        $ git log --grep="math function"
+        
 #Qn.
 Show me all commits made by user "harry" AND has a commit message "math function" in it.
 
@@ -116,6 +121,8 @@ $ git diff --staged Login.java
 
 # See the content change of a file after the commit
 $ git show 123abc456
+$ git diff 123abc..345abc
+
 
 2. Deleting a file
 
@@ -138,8 +145,7 @@ undo/revert local changes from source area
 	$ git checkout -- LoginWeb.java
 
 Unstage the changes from STAGE area
-	$ git reset HEAD LoginWeb.java
-
+	$ git reset LoginWeb.java
 
 
 # BRANCHING
@@ -273,5 +279,16 @@ Git seems to be good with merging.
 
 5.
 Git stores each change as SHA values but SVN uses simple numbers as revisions.
+
+
+Qns:
+====
+1. How to clone a particular directory from remote.
+2. Can we clone a single file from remote repository?
+3. git stash
+
+Pending:
+1. How do you make previous commit as latest
+2. How do you resurruct a deleted file?
 
 
