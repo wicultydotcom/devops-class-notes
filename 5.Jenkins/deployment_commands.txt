@@ -1,0 +1,12 @@
+if [ $ENVIRONMENT = "QA" ];then
+
+    sshpass -p $PASSWORD scp target/gamutgurus.war gamut@172.17.0.3:/home/gamut/Distros/apache-tomcat-8.5.63/webapps
+    sshpass -p $PASSWORD ssh gamut@172.17.0.3 "/home/gamut/Distros/apache-tomcat-8.5.63/bin/startup.sh"
+
+elif [ $ENVIRONMENT = "SIT" ];then
+
+    sshpass -p $PASSWORD scp target/gamutgurus.war gamut@172.17.0.4:/home/gamut/Distros/apache-tomcat-8.5.63/webapps
+    sshpass -p $PASSWORD ssh gamut@172.17.0.4 "/home/gamut/Distros/apache-tomcat-8.5.63/bin/startup.sh"
+
+fi
+
