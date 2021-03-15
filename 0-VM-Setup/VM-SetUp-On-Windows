@@ -33,9 +33,11 @@ https://releases.ubuntu.com/16.04/ubuntu-16.04.6-desktop-i386.iso
 
 - Select 'Install Ubuntu' --> continue and follow with other configurations.
 
-Note:
+Note-1:
 You may get an error something like "Virtualization/VTx" is not enabled. If you get this, go to BIOS settings by pressing F2 or F12 while machine restart. Go to BIOS configurationa and 'enable virtualization'.
 
-
-
+Note-2:
+Once the Linux is installed, you may see small screen. If you want to maximize the screen do below.
+Click on Ubuntu's  'start' button (it may on top left or bottom left) --> type displays --> go to displays --> go to 'resolution' --> and try different options.
+Ideally 1400*900 value should give you bigger screen or try bigger value.
 
