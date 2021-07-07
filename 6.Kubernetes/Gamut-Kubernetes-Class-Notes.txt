@@ -8,11 +8,11 @@ Topic: Setting up Control-plane/Master node
 Follow this source.
 Source:
 https://docs.docker.com/install/linux/docker-ce/ubuntu/
-
-
+ $ curl -fsSL https://get.docker.com -o get-docker.sh
+ $ sudo sh get-docker.sh
 2)
 # Install Kubeadm
-Follow this source or below commands.
+Follow this source or below commands.	
 
 Source:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/	
@@ -36,7 +36,7 @@ EOF
 - sudo apt-mark hold kubelet kubeadm kubectl
 
 
-#3) Initialize a new Kubernetes cluster
+#3) Initialize a new Kubernetes control-plane node
 
 $ sudo kubeadm init
 NOTE: Save this output as it's required to add worker nodes.
@@ -79,14 +79,13 @@ $ kubectl get nodes
 NAME STATUS ROLES AGE VERSION
 node1 Ready master 3m51s v1.12.1
 
-GREAT - the cluster is ready and all dns system pods are now working. Cluster is ready now.
+GREAT - the cluster is ready and all dns system pods are now working. Master is ready now.
 		Now that the cluster is up and running, it’s time to add some worker-nodes.
 
 
 #
-Topic: Worker Node Setup & Joining to the cluster:
+Topic: Worker Node Setup & Joining to the Master:
 #############################################
-
 1
 # Create a worker node machine in GCP / AWS cloud platform.
 
@@ -143,6 +142,7 @@ spec:
     image: nginx
     ports:
     - containerPort: 80
+
 	
 
 pod.yaml - Manifest file description:
@@ -189,6 +189,7 @@ $ kubectl get pod -o wide
 $ curl http://10.44.0.1:80
 $ curl http://POD-IP:Server-Port
 
+
 - You can also login into the Pod container to get more information.
 $ kubectl exec -it nginx-pod /bin/bash
 	Note: Let's add some code and launch our nginx application
@@ -206,7 +207,6 @@ $ kubectl exec -it nginx-pod --container nginx-container /bin/bash
 $ kubectl get pods
 $ kubectl delete pods nginx-pod
 $ kubectl delete -f pod.yml
-
 
 NOTE:
 kubelet takes the PodSpec and is responsible for pulling all images and starting all containers in the Pod.
@@ -229,8 +229,6 @@ $ kubectl get pods --watch (monitor the status continuously)
 
 - Another great Kubernetes introspection command. Provides Pods(object's) lifecycle events.
 $ kubectl describe pod nginx-pod
-
---wk-end-2PM-batch--
 
 #
 Project-2 [Nginx]
@@ -265,24 +263,25 @@ vim deploy-nginx.yml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: flipkart-prod-deploy
+    name: nginx-prod-deploy
     labels:
-      app: flipkart-prod
+      app: nginx-app-prod
 spec:
   replicas: 6
   selector:
     matchLabels:
-      app: flipkart-pod-template
+      app: nginx-pod
   template:
     metadata:
       labels:
-        app: flipkart-pod-template
+        app: nginx-pod
     spec:
       containers:
         - name: nginx-container
           image: nginx
           ports:
           - containerPort: 80
+
 		  
 # Creating deployment
 $ kubectl create -f deploy-nginx.yml
@@ -298,6 +297,8 @@ $ kubectl exec -it nginx-deploy-5f654bcccd-27xtg /bin/bash
 $ curl http://10.44.0.1:80
 $ curl http://pod_ip:80
 
+-->describe
+
 # Testing Self-healing capability
 ----------------------
 If you delete some Pods, Kubernetes can automatically re-create the same for us to make sure given no. of Pods are always running.
@@ -308,23 +309,20 @@ $ kubectl delete pods POD_NAME1 POD_NAME2
 - Check if the Pods are re-created
 	$ kubects get pods
 
-
-
+--
 Creating service to expose the application to outside world and setting up load balancer
 ===============================================
 $ vim service-nginx.yml
 -----
 apiVersion: v1
 kind: Service
-
 metadata:
-    name: flipkart-service
-    labels: 
-      app: flipkart-pod-service
-	  
+    name: nginx-prod-service
+    labels:
+      app: nginx-app-prod-service
 spec:
   selector:
-    app: flipkart-pod-template
+    app: nginx-pod
   type: NodePort
   ports:
   - nodePort: 31000
@@ -369,7 +367,8 @@ spec:
           ports:
           - containerPort: 8080
           command: ["/bin/sh"]
-          args:  ["-c", "/root/apache-tomcat-8.5.38/bin/startup.sh; while true; do sleep 1; done;"]	
+          args:  ["-c", "/root/apache-tomcat-8.5.38/bin/startup.sh; while true; do sleep 1; done;"]
+	
 # Execute deployment
 $ kubectl create -f  deploy-gamutkart.yml
 
@@ -431,17 +430,24 @@ $ kubectl delete service <service-name>
 
 
 #Scaleup Pods
-$ kubectl scale deployments/gamutkart-deploy --replicas=2
+$ kubectl scale deployment/gamutkart-deploy --replicas=2
 
 
-8:30 PM daily
---
-- Creatng a POD on a particular WN
-- Autoscale example
-- Assign different names to different PODs manually
-- Create different replicas for different PODs
-- select a deployment as part ofa serice
-- How to list all the API versions w.r.t Object implementation.
-- 
-	
-	
+# Misc:
+===============
+1. List all the pods which are under a Service
+
+--> Describe the service & find the Pod's Label which are tied up with the service first. In below case it is "app=nginx-pod".
+	$ kubectl describe service <service-name> (check for "Selector: app=nginx-pod in the output)
+")
+--> List all Pods which have the label. Example, in above case it is: app=nginx-pod.
+	$ kubectl get pods  -l app=nginx-pod
+
+
+=================
+1 - Namespaces
+2 - Statefull Vs Stateless Applications
+3 - Volumes - pending
+4 - Secrets
+
+

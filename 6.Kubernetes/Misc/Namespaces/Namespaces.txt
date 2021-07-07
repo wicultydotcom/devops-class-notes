@@ -1,0 +1,156 @@
+Agenda:
+---
+. What is Namespace
+. Why to use Namespace & Use-cases
+. How to Implement Namespaces
+
+----------------
+#1)
+What is a Namespace?
+	- Namespace is nothing but a virtual cluster inside of your Kubernets cluster.
+	  It forms a cluster inside a cluster. We can have multiple Namespaces in a cluster and these are all isolated from each other.
+	-  
+
+#2)
+Why to use Namespaces? Typical use-cases
+CASE-A: You will miss overview if you don't have an isolated environment
+	- If you create all your resources like pods, deployments, services ..etc. in the 'default' namespace. very soon it get's filled with too many things so, you will miss the Overview.
+	
+	- So, we can organize the Kubernets resources in different Namespaces. This way we can logically group different resources.
+	
+	For example- 
+	- all database or monitoring or metrics or logging related resources like pods, deployment, services, secrets ..etc.
+	- all resources related to QA, Prod, Team-A/B, Project-A/B ..etc.
+	
+CASE-B: Naming conflicts & configurations override
+	- Assume that team-A had deployment called 'monitoring-deployment'. For some reason, they deleted it. After some days, another team team-B creates a new deployment with the same name 'monitoring-deployment' for different purpose. What if someone from team-A, modifies the configurations thinking it's their deployment? Or modifies something by running team-A's CI/CD pipeline?
+	
+	- So, if we have namespaces, different team can get into their namespace and this will avoid conflicts and configuration overriding disaster. 
+	
+CASE-C: Access and Resource limits on Namespaces
+	- We have two teams working on the same cluster. We can create two different namespaces say 'Project-A-namespace' and 'Project-B-namespace'. We can control the access for different people based on the project they are working on ex- create/update/delete ..etc. people working on one project can't do anything on the other project. 
+	
+	- We can also limit the resources(CPU, RAM, STORAGE) that each namespace can consume. Assume that we have two projects running in the same cluster. Sometimes, one project may use more resources making other project slow. So, namespaces helps us to restrict RAM, CPU, STORAGE per project.
+	
+Note- some components in kubernetes can't be namespaced or isolated. they live in the cluster globally.
+	  example: nodes and volumes
+
+#2A) When to use Namespace
+Namespaces are intended for use in environments with many users spread across multiple teams, or projects. For clusters with a few to tens of users, you should not need to create or think about namespaces at all.
+
+	
+#3) Listing all namespaces
+--
+$ kubectl get namespace   OR
+$ kubectl get ns
+
+output-
+NAME              STATUS   AGE
+default           Active   27m
+kube-node-lease   Active   27m
+kube-public       Active   27m
+kube-system       Active   27m
+
+- kube-system: contains components which are related to system processes ex; master, kubectl related
+
+- kube-public: it contains publicly accessible data. it has configmap that contains cluster information. for example, type $kubectl cluster-info , you can see the details about the cluster. this is coming from this configmap which exists in the kube-public namespace.
+
+- kubec-node-lease: each node in the cluster has something called, 'lease' object. this determines the availability of the node
+
+-default: this is where all the resources (pods, deployment, service ..etc.) that we create are located.
+
+#4) Creating a namespace using kubectl CLI.
+--
+$ kubectl create namespace prod-env
+$ kubectl get ns 
+
+Note- you can also create namespace using .yaml configuration file.
+	  this helps us to track the history in the repository.
+
+#5) Creating a namespace using yaml configuration file
+--
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-project
+
+#6) Creating Kubernetes resources in the Namespace.
+Note- Before creating the resource in a Namespace, make sure that Namespace is created first.
+
+There are two ways to create Resources in a Namespace
+	1. Appending --namespace=nginx-project to 'kubectl create -f xxx.yaml'
+	2. Writing 'namespace: nginx-project' under metadata section of the resource
+
+1. Appending --namespace=<namespace-name> to 'kubectl create -f xxx.yaml'
+	$ kubectl create -f deployment.yaml --namespace=nginx-project
+	
+Verify that above deployment is created in nginx-project Namespace
+	$ kubectl get deployment -n nginx-project
+	
+	NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+	nginx-prod-deploy   3/3     3            3           25s
+	
+	$ kubectl get pods -n nginx-project
+	
+	$ kubectl get pods
+
+	$ kubectl get deployment
+	No resources found in default namespace.
+
+	- delete previous deployment from Namespace nginx-project
+	$ kubectl delete deployment nginx-prod-deploy -n nginx-project
+	
+2. Writing 'namespace: nginx-project' under metadata section of the resource in yaml configuration file
+vim nginx-deployment.yaml
+--
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-prod-deploy
+	namespace: nginx-project
+...
+   ...
+      ...
+
+- Check for the deployment called 'nginx-prod-deploy' in the 'nginx-project' namespace
+	$ kubectl get deployment -n nginx-project
+		NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+		nginx-prod-deploy   3/3     3            3           7m13s
+
+Note- If we don't use '-n nginx-project', by default it will show all the resources from default Namespace
+
+#7) Changing active Namespace
+We can change the active Namespace with 'kubens' command line utility. In GKE, it is installed already.
+We may need to install it in on-premise clusters using 'sudo apt install kubectx'
+
+- Listing all Namespaces. It highlights the current active Namespace with yellow colour.
+$ kubens
+
+- List current active Namespace
+	$ kubens -c
+
+- Changing the Namespace Or activating a Namespace.
+   Below command activates nginx-project Namespace. We can Observe that all commands that we execute are applied to that particular Namespace.
+   
+	$ kubens nginx-project
+		Context "gke_kubernetes-283202_us-central1-c_cluster-1" modified.
+		Active namespace is "nginx-project".
+		
+	$ kubectl get deployment
+		NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+		nginx-prod-deploy   3/3     3            3           30m
+		
+	$ kubectl get deployment -n nginx-project
+		NAME                READY   UP-TO-DATE   AVAILABLE   AGE
+		nginx-prod-deploy   3/3     3            3           31m
+		
+- Moving back to previous active Namespace
+	$ kubens -
+
+- Setting the namespace preference / activating namespace using kubectl command
+kubectl config set-context --current --namespace=<namespace-name>
+kubectl config view | grep namespace
+
+#8) Deleting a namespace 
+kubectl delete namespaces <namespace-name>
+

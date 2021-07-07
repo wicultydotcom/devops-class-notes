@@ -1,0 +1,45 @@
+# CONCEPT-1
+Creating POD and exposing to public with NodePort type service using kubectl CLI
+---
+1. creating pod
+$ kubectl run nginx-pod --image=nginx --port=80
+
+2. exposing pod using NodePort type service
+$ kubectl expose pod nginx-pod --name=nginx-svc --type=NodePort --port=80 
+
+3. Access/test the application
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+nginx-svc    NodePort    10.97.142.133   <none>        80:32422/TCP   4m44s
+
+--> As we discussed in the class, take the port which is exposed to outside world. Note that --port=80 which is used in the expose command is service's port. It is like port:32422 is exposed to outside world and it is mapped to service port:80 and service port is again mapped to container port:80 (32422:80:80). So, to access the pod, we have to use Worker-nodes public IP and public port i.e 32422.
+
+--> check your worker-node's public/external IP from google cloud console. In this case it is: 104.198.19.101
+
+--> access the nginx server using below command or from the browser.
+$ curl http://104.198.19.101:32422 
+
+
+
+# CONCEPT-2
+Creating and exposing deployment' using kubectl CLI
+---
+1. create deployment using kubectl command with 3 pods and nginx image.
+$ kubectl create deployment nginx-deployment --image=nginx --replicas=3
+
+2. check if the deployment is created
+$ kubectl get deployment
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3/3     3            3           6s
+
+3. expose the deployment to public by creating NodePort type service. below command creates a service called 'nginx-service' and binds all the pods to it which are created by deployment 'nginx-deployment'. Now we have 3 pods in this service so that it can do loadbalancing across these 3 pods.
+$ kubectl expose deployment nginx-deployment --type=NodePort --port=80 --name=nginx-service
+
+4. check the service
+$ kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+nginx-service   NodePort    10.102.229.245   <none>        80:31327/TCP   5s
+
+5. access/test the application using below command or the browser. Note that the publicly exposed port in this case is 31327. we can access the application using below Worker-node's public IP. You can get worker-node's public IP from Google cloud. In this case public IP is-104.198.19.101.
+$ curl http://104.198.19.101:31327
+

@@ -1,0 +1,191 @@
+Kubernetes Storage Volumes Agenda:
+---
+. Statefull Vs Stateless Applications
+. Why to use Volumes & Use-cases
+. What is a Volume
+. Different types of Volumes
+. How to Implement Volumes
+
+----------------
+#1)
+Statefull Vs Stateless Applications
+
+
+#2)
+Why to use Volume?
+CASE-A: Statefull applications require data to be persisted somewhere.
+
+	. Kubernetes pods are ephemeral due to (Node failures, scaling, rolling updates, self-healing ..etc.)
+	. So, how do you make sure that applications data is persisted so that it can resume from previous state?
+	. How can two containers in the same pod share the data?
+	. How can data persist through out life-cycle of a pod?
+	. How can data persist beyond pod life?
+	. If you take Physical machines and Virtual machines, sometimes you find TBs of volumes attached. But when it comes to pods and containers how do you do it? Initially, containers are designed to run stateless applications. Now it has become hot topic about how you make containers run statfull applications
+
+Goal: In summary, how do you handle the application data running inside pods using various storage options available in kubernetes.
+
+	
+#3)
+What is a Volume?
+A Kubernetes volume is essentially a directory accessible to all containers running in a pod. The directory can be local to the Node where the Pod is created or in the cloud.
+
+#4)
+Volume Types?
+The Volume types are categorized in to two types.
+	1. Ephemeral - same life as pods (emptyDir)
+	2. Durable   - beyond pods life-time (hostPath, gcePersistentDisk, awsElasticBlockStore, azureDisk ..etc.)
+	
+Volumes types that Kubernetes supports...
+https://kubernetes.io/docs/concepts/storage/volumes/
+
+#
+emptyDir Volume
+	- creates empty directory on the node where the pod is created
+	- after that, containers inside the pod can write and read from the volume
+	- stays as long as pod is running
+	- once the pod is deleted from a node, emptyDir volume is deleted forever.
+
+primary usage-
+	. temporary space. share the data between two containers in the same pod as a cache.
+	
+#
+hostPath Volume
+	- hostPath exposes one of the directory of the worker node as a volume inside the pod.
+	- data inside the volume remains even after the pod is terminated.
+	- if pod gets scheduled on the same node and hostPath exists, it will immediately pick up from the same state.
+	- you want to be careful for production, as hostPath gets created on the node and when pods get rescheduled, it may not get the same previous data. every pod may have it's own data inconsistently. 
+
+primary usage-
+	. you are using nfs kind of external mount point and that data is backed-up.
+	. you don't want to pay for using cloud storage services.
+	
+#
+gcePersistentDisk
+	- gcePersistentDisk volume mounts a Google Compute Engine persistent disk into pod
+	- volume data is persisted even pod or node is terminated for any unknown reason.
+	- restrictions-
+		1. you should create gcePersistentDisk before you use it. 
+		2. nodes must be GCE VMs 
+		3. those VMs need to be in the same GCE project and zone as the PersistentDisk
+
+1. Creating a GCE persistent disk 
+Before you can use a GCE persistent disk with a Pod, you need to create it. Let's create it using gcloud.
+	$ gcloud compute disks create --size=10GB --zone=us-central1-c --project=kubernetes-283202  my-data-disk
+
+2. Create a pod object which uses gcePersistentDisk 'my-data-disk' 
+vim gcepd.yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - image: nginx
+    name: test-container
+    volumeMounts:
+    - mountPath: /test-pd
+      name: test-volume
+  volumes:
+  - name: test-volume
+    # This GCE PD must already exist.
+    gcePersistentDisk:
+      pdName: my-data-disk
+      fsType: ext4
+
+$ kubectl create -f gcepd.yaml
+	pod/test-pd created
+	
+3. Check on which node this pod is running
+$ kubectl get pod -o wide
+NAME      READY   STATUS    RESTARTS   AGE     IP         NODE                                       NOMINATED NODE   
+test-pd   1/1     Running   0          4m15s   10.4.2.8   gke-cluster-1-default-pool-26be0a0b-mch0   <none>          
+
+4. The pod is scheduled on gke-cluster-1-default-pool-26be0a0b-mch0. if you check the disk in google cloud console, it's marked as being used by this node 'gke-cluster-1-default-pool-26be0a0b-mch0'.
+
+5. display complete details of the pod which is using gcePersistentDisk. observe that it is using persistentdisk and it's name is my-data-disk.
+	$ kubectl describe pod test-pd
+	
+TESTING:
+---
+Let's test the use case. the purpose is to have data persistence irrespective of the node, pod failure due to un-expected shutdown, reboot or any interruptions to the pod on the node. so, overall we want our data to be safe across all the pod instances.
+
+To test this, 1. let's create a file in the mount. 2. delete the pod.
+even the pod is deleted, data/file should be present in the volume. then lets create the pod and see if we get that file.
+
+1. create a sample file in the pod
+	$ kubectl exec -it test-pd  -- /bin/bash
+	$ cd /test-pd/
+	$ echo "wiculty" > test.html
+	$ cat test.html
+	  wiculty
+$ exit
+
+2. delete the pod
+	$ kubectl delete pod test-pd 
+		"test-pd" deleted
+note; now you can see that 'my-data-disk' is not being used by any pod.
+
+3. let's create the same pod again and see if we get the data from the Volume
+	$ kubectl create -f gcepd.yaml
+	$ kubectl get pods
+		NAME      READY   STATUS              RESTARTS   AGE
+		test-pd   0/1     ContainerCreating   0          7s
+note; you can see that 'my-data-disk' is being used the node on which the pod is running.
+
+4. now let's check if the new pod get the same data i.e if the volume is mounted.
+	$ kubectl exec -it test-pd  -- /bin/bash
+	$ cd /test-pd/
+	$ ls
+		test.html
+	$ cat test.html
+		wiculty
+#
+Delete the disk
+
+
+
+==========================
+# CONCEPT-1
+Creating POD and exposing to public with NodePort type service using kubectl CLI
+---
+1. creating pod
+$ kubectl run nginx-pod --image=nginx --port=80
+
+2. exposing pod using NodePort type service
+$ kubectl expose pod nginx-pod --name=nginx-svc --type=NodePort --port=80 
+
+3. Access/test the application
+$ kubectl get svc
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+nginx-svc    NodePort    10.97.142.133   <none>        80:32422/TCP   4m44s
+
+--> As we discussed in the class, take the port which is exposed to outside world. Note that --port=80 which is used in the expose command is service's port. It is like port:32422 is exposed to outside world and it is mapped to service port:80 and service port is again mapped to container port:80 (32422:80:80). So, to access the pod, we have to use Worker-nodes public IP and public port i.e 32422.
+
+--> check your worker-node's public/external IP from google cloud console. In this case it is: 104.198.19.101
+
+--> access the nginx server using below command or from the browser.
+$ curl http://104.198.19.101:32422 
+
+
+# CONCEPT-2
+Creating and exposing deployment' using kubectl CLI
+---
+1. create deployment using kubectl command with 3 pods and nginx image.
+$ kubectl create deployment nginx-deployment --image=nginx --replicas=3
+
+2. check if the deployment is created
+$ kubectl get deployment
+NAME               READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3/3     3            3           6s
+
+3. expose the deployment to public by creating NodePort type service. below command creates a service called 'nginx-service' and binds all the pods to it which are created by deployment 'nginx-deployment'. Now we have 3 pods in this service so that it can do loadbalancing across these 3 pods.
+$ kubectl expose deployment nginx-deployment --type=NodePort --port=80 --name=nginx-service
+
+4. check the service
+$ kubectl get svc
+NAME            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+nginx-service   NodePort    10.102.229.245   <none>        80:31327/TCP   5s
+
+5. access/test the application using below command or the browser. Note that the publicly exposed port in this case is 31327. we can access the application using below Worker-node's public IP. You can get worker-node's public IP from Google cloud. In this case public IP is-104.198.19.101.
+$ curl http://104.198.19.101:31327
