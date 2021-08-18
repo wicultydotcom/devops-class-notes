@@ -196,6 +196,9 @@ Build types
         - Incremental Build
         - Daily Build
         - Nightly Build
+        - Production Build
+        - hot-fix Build
+        
 
 # Skip test cases
 $ mvn install -DskipTests (skip test cases execution)

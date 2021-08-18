@@ -48,6 +48,23 @@ git show b85a6e123
 SHA / Version / Revison / Commit Id
 
 #
+Settng up token to access GitHub
+========================================
+1. go to https://github.com
+
+2. Generate toke from github
+click on user-profile icon (top right) .. click on 'settings' .. click on 'Developer settings' .. click on 'Personal access tokens' .. click on 'Generate new token' .. give a name under 'Note' (example:class) .. select 'No expiration' from 'Expiration' drop-down box .. click on 'repo' check box under 'Select scopes' .. and finally click on 'Generate token' button.
+
+3. Store the token in your machine using below command
+$ git remote set-url origin https://nageshvkn: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@github.com/nageshvkn/wiculty29.git
+
+Note: in the above command
+- 'nageshvkn' is your GitHub user-name.
+- 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 IS your token generated from GitHub.
+- github.com/nageshvkn/wiculty29.git is your repository path. don't give 'https'
+
+
+#
 Creating remote repository in github
 ===============
 1. create an account in github.com

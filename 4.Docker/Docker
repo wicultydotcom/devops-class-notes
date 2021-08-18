@@ -64,7 +64,12 @@ sudo docker --version
 If you would like to use Docker as a non-root user, you should add your user to the “docker” group with below command.
 
   sudo usermod -aG docker <your-user>
+  
+check if the user is added to the group
+$ cat /etc/group | grep docker
+docker:x:998:wiculty
 
+Note - restart the machine once the user is added to the group.
 
 #
 uninstall docker:
@@ -84,7 +89,7 @@ $ sudo docker run -it ubuntu /bin/bash
 - we use `docker run` to create new containers.
 
 -i  : opens STDIN from the container
--t  : tells docker to assign a pseudo-tty to the container.
+-t  : tells docker to assign a terminal to the container.
 -it : provides interactive shell
 	
 ubuntu : Is an image and also called as "stock image" or "base image".
@@ -204,9 +209,12 @@ $ docker container ls -a -f status=exited
 	docker attach b1b1c8dc1939
 
 
-# Run a linux command remotely in a container Or Get an independent terminal from a container remotely (from Host)
-$ docker exec -it tomcat-server ps -ef  
+# Run a linux command remotely in a container
+$ docker exec -it tomcat-server ps -ef
 
+#
+Get an independent terminal from a container remotely (from Host)
+$ docker exec -it tomcat-server /bin/bash
 
 # Stoping a container from 'host machine'
         - docker stop dgamut (Gracefully stop the container)
