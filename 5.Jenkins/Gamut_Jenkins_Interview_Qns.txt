@@ -6,7 +6,7 @@ Office: 944897 1000
 1. What is continuos integration?
 
 	- C.I integration is nothing but continous compilation, testing and deployment.
-	- C.I is a process which monitors the new changes coming into V.C.S like Git, checkouts the source code, builds the change, runs the test case to test the change and deploys it to given environment automatically (seemlessly) without any manual intervention.
+	- C.I is a process which monitors the new changes coming into V.C.S like Git, checkouts the source code, builds the changef, runs the test case to test the change and deploys it to given environment automatically (seemlessly) without any manual intervention.
 
 2. What is continuous delivery?
 
@@ -195,13 +195,25 @@ p
 
 p
 32. Suddenly my Jenkins instance became slow. What steps do you take to improve the performance?
-		- clean up old jobs. may be by using shelve plugin
-		- implement master/slave distributed concept.
-		- may be improve the computing power for ex: RAM 	
+		4 - clean up old jobs. may be by using shelve plugin
+		2 - implement master/slave distributed concept.
+		1 - may be improve the computing power for ex: RAM 	
 			and CPU
 		- Make sure your Master doesn't run any jobs. Just 
 			keep it for serving jenkins trafic and schedule 
 			all your builds in slave nodes.
+
+why jenkins may become slow?
+1. hardware configurations / type
+2. more number of active builds
+3. more numbe of build runs
+4. more no.of unused jobs
+5. more unused plugins
+6. network
+7. more no.of users
+8. poorly tuned jvm arguments | non-optimal garbase collection
+
+
 
 33. how much you rate yourself in jenknins?
 
