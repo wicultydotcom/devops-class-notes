@@ -49,7 +49,7 @@ Requirements Check:
 
 Installation Steps:
 =====================	
-# To install the Docker, Run belwo commands
+# To install the Docker, Run below commands
 Reference: https://docs.docker.com/engine/install/ubuntu
 
         $ curl -fsSL https://get.docker.com -o get-docker.sh
@@ -83,7 +83,7 @@ Managing docker containers
 ===============================
 # Create a new container using below command
 
-$ sudo docker run -it ubuntu /bin/bash
+$ docker run -it ubuntu /bin/bash
 ------------------
 - "docker run" command provides all lanuching capabilities for docker to create a container.
 - we use `docker run` to create new containers.
@@ -98,7 +98,7 @@ ubuntu : Is an image and also called as "stock image" or "base image".
 /bin/bash: 'shell program' that will be installed in the terminal.
 
 
-# Inspect the new container.. Let's beleive that it's separate machine
+# Inspect the new container.. Let's believe that it's separate machine
 1.
 	hostname
 2.
@@ -112,32 +112,23 @@ ubuntu : Is an image and also called as "stock image" or "base image".
 
 
 # SSH setup for containers
-Setup SSH in the containers so that they can communicate with each other
+By default, containers won't be having SSH installation. But, SSH almost mandatory in order to connect to a remote machine of if remote machine wants to connect to the container. Let's setup SSH in the container.
 
-- Create two containers
-		172.17.0.2
-		172.17.0.3
-- Try to connect to 172.17.0.3 from 172.17.0.2 using below command. You will get an error
-	$ ssh gamut@172.17.0.3 (you won't be able to conect by default)
-
-- Install ssh server
+- Create a new container
+$ docker run -it ubuntu /bin/bash [run ssh command. It's missing!]
+- Install SSH in the container
 $ apt-get update
-$ apt-get install openssh-server
+$ apt-get install ssh [This installs both SSH client and Server]
 
-- Start the server
+- Start the SSH server
 $ service ssh start (status/stop/restart)
 
-
 - Create an user and set up password
-$ useradd -m -d /home/gamut -s /bin/bash gamut
+$ used -m -d /home/gamut -s /bin/bash gamut
 $ passwd gamut
 	
-- Connect to the container using ssh from 172.17.0.2 or any other machine.
+- Connect to the container using below command from the host machine.
 $ ssh gamut@172.17.0.3
-
-# Enable root user over ssh
-Add below line under "# Authentication:" in "/etc/ssh/sshd_config"
-	PermitRootLogin yes
 
 #
 Shotdown a container
@@ -155,7 +146,7 @@ $ docker ps -a
 
 
 # List given no. of containers
-$ docker ps -a -n1
+$ docker ps -n1
 
 # List running containers only
 $ sudo docker cotainer ls
@@ -165,7 +156,7 @@ $ docker ps
 $ docker container ls -f status=exited (Where Status can be exited/running)
 
 
-# "docker container ls" command output shows
+# "docker ps -a" command output shows
 	- Image name from which container is created
 	- ID - container can be identified using short UUID, longer UUID Or name.
 	- Status of the container (Up / Exited)
@@ -186,7 +177,6 @@ $ docker rename db-server3 db-server-name3
 $ docker rm ID/name
 
 # Delete all (running/stoped) containers at once
- $ docker rm -f `docker container ls -a -q`
  $ docker rm -f $(docker container ls -a -q)
  $ docker rm -f $(docker ps -a -q)
 
@@ -201,7 +191,7 @@ $ docker container ls -a -f status=exited
 
 # Starting a stopped container
 	sudo docker start gamut
-	sudo docker stop aa3f365f0fdocker4e
+	sudo docker stop <container-name>
 	sudo docker restart gamut
 
 # Attaching to a running container
@@ -216,48 +206,20 @@ $ docker exec -it tomcat-server ps -ef
 Get an independent terminal from a container remotely (from Host)
 $ docker exec -it tomcat-server /bin/bash
 
-# Stoping a container from 'host machine'
-        - docker stop dgamut (Gracefully stop the container)
-	- docker kill dgamut (Forcibly stop the container)
-
 
 # Shortcut Keys
 	Ctrl + p + q - push a running container in background mode.
 	Ctrl + d -  short cut to 'stop' a container.
 
 
-# Inspecting the container's processes from host machine
-	$ docker top <container-name>
-
-
-# Show last 4 containers (stopped/running)
-	$ docker ps -n2
-
 # Create a container in a background mode ( without termial access ) 
 $ docker run -it -d ubuntu /bin/bash
-
-
-# Find More About The Container
-- 'docker inspect' comamnd interrogates the container and returns complete 
-   information about it.
-
-  Ex: image name, IP, Memory details, hostname ..etc
-	 
-	 Examples:
-	$ docker inspect <container-name>
-	$ docker inspect -f '{{.Config.Hostname}}' tomcat-server1
-	$ docker inspect -f '{{.NetworkSettings.Networks.bridge.IPAddress}}' tomcatserver1
-	
- Note: use --format (OR) -f
-
-# List all container names
-$ docker inspect --format "{{.Name}}" $(docker ps -a -q) | tr -d '/'
-
 
 
 STATS:
 ==========
 # Display usage statistics of a container
+	$ docker stats <container-name>
 	$ docker stats --no-stream <container-name>
 	$ docker stats --no-stream --all
 
@@ -267,7 +229,7 @@ STATS:
 #
 Allocating memory for a container (below command allocates 1 GB RAM)
 	$ docker run -it --name tomcat-server -m 1g ubuntu /bin/bash
-	$ docker run -it --name tomcat-server -m 1024m ubuntu /bin/bash 
+	$ docker run -it --name tomcat-server -m 512m ubuntu /bin/bash 
 
 #
 Updating memory of an existing container 
@@ -277,12 +239,6 @@ Updating memory of an existing container
 $ docker run -it --cpus="2" --name jenkins-server ubuntu /bin/bash
 $ docker update --cpus="2" jenkins-server
 
-
-# Push a container in sleep mode
-$ docker pause db-server1
-$ docker unpause db-server1
-
---8:30PM daily--
 
 DAY-4:
 # Docker Images
@@ -375,6 +331,8 @@ Note:
 uninstall nginx using below comamnd
 $ sudo apt-get purge nginx nginx-common
 
+--weekend-batch--
+Container status - explain create, pause
 
 
 PROJECT-2:
@@ -436,7 +394,6 @@ Note: start the nginx server manually as it's not fixed yet. It will be fixed in
 
 3. Verify if nginx is running from the container.
 	$ http://172.17.0.2:80
-
 	
 #
 User Images Syntax:
@@ -450,30 +407,12 @@ Official Images Syntax:
 	  ubuntu- is image name
 	  16.04 - is called tag
 
-# Pulling the images
-	- docker pull tomcat
-
-# Searching docker images in docker hub
-	- docker search puppet
-	- docker search jenkins
-
 
 # Deleting an Image
 	- docker rmi gamut/nginx
 
 # Deleting all Images
 	- docker rmi $(docker images -q)
-	
-DAY-7:
-#
-Docker Image layers
-=========================
-- Checking the history of our docker image
-	$ docker history <Image-Id>
-
-# Build image without using build cache	
-	- Use --no-cache option
-	$ docker build --no-cache -t="username/imagename" .
 
 
 # Container creation process - Deep dive
@@ -491,29 +430,13 @@ Docker Image layers
 		    cgroups, namespace, lxc, devicemapper/aufs/overlay..etc.
 		Kernel
 
-Interview Notes:
-===============
-#
-Docker Benefits:
-=================
-1. Portability: 
-	ship environments from one type of infrastructure to another without building up new VMs and tearing down the old ones.
-
-2. Quick deployment/Teardown:
-	With a single command, you can spin up new containers or tear down existing ones. If you want to clone a new VM, you are looking at waiting for close to or over a few hours. With Docker, it will take a few minutes to achieve what you need.
-
-3. Consistency:
-	No more of the "works on my machine!" excuse. As everyone uses the same images to work, consistency is always guaranteed. All the container will act the same in your environment as it will on others.
-
-4. Managing infrastructure-like code:
-When it comes to upgrades, you can simply update your Dockerfile, and then tear down the old one. This helps not only with updates, but it can also help with rollbacks as well.
 
 Volumes:
 ===============
 # List all volumes available in host machine
 	$ docker volume ls
  
-# Create a new Volume
+# Create a new Named Volume
 	$ docker volume create deployment_code
 
 # Check Mount point directory
@@ -532,9 +455,12 @@ Volumes:
 	$ docker volume prune
 
 # Note:
-Creating Volume with your own directory in host machine (OR)
-Crreating Volume with existing directory in the host machine
+Creating host Volume with your own directory in host machine (OR)
+Creating host Volume with existing directory in the host machine
 	$ docker run -it -v /home/gamut/Distros:/Distros ubuntu /bin/bash
+
+# bind mount
+$ docker run -it --mount type=bind,source=/home/gamut/Distros,target=/Distros ubuntu /bin/bash
 
 # List down all containers which are using a particular volume
 	$ docker ps -a --filter volume=deployment_code
@@ -581,6 +507,8 @@ Can you explain how you have implememnted Docker for your application?
 7. Launch the gamutkart application from all containers.
 	$ http://IP:8080/gamutkart
 
+--7pm-daily-batch--
+
 #
 Docker and Jenkins Integration
 1. Create a new Free style project in Jenkins
@@ -591,7 +519,8 @@ Docker and Jenkins Integration
                 - docker build -t "nageshvkn/gamutkart-img" . (Note: don't forget "." at the                                                                                      end)
                 - ./create-env.sh 10
 
-
-      
+----------
+1. How to download image from private repo
+2. 
 
 

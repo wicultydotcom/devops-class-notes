@@ -28,7 +28,6 @@ JDK Un-Installation
 --
 $ sudo apt-get remove openjdk*
 
-
 Maven Installation
 --
 $ sudo apt-get update
@@ -37,7 +36,6 @@ $ sudo apt-get install maven
 Maven Un-Installation
 --
 $ sudo apt-get remove maven
-
 
 Check The installations:
 --
@@ -49,7 +47,8 @@ Check The installations path:
 which java
 which mvn
 
-#5 TEST YOUR KOWLEDGE
+
+#5 TEST YOUR KNOWLEDGE
         - Build and Deployment E2E work-flow and basics
 	- What is compilation & why we compile the source code?
 	- Packaging sequence for Java application
@@ -58,6 +57,7 @@ which mvn
 	- Environment
 	- Dev, QA & DevOps teams Interaction and Collaboration.
 
+DAY-2:
 #6
 Maven's standard project layout
 =================================
@@ -77,6 +77,7 @@ java projects which are created by maven, ideally follows below project folder s
 	  |		|
       App.java	   AppTest.java
 
+
 flipkart - is called "Project name" / "ArtifactID"
 src 	 - Source folder which contains the 
 				application source code
@@ -87,10 +88,8 @@ pom.xml  - Maven's build file using which we can
 				compilation, test runs, jar/war creation,
 				deployments...etc.
 
-Note: use $ cd flipkart ; tree . commands to see the project structure in tree format 
 
-DAY-3:
-#8
+#7
 Building the maven project:
 -----------------------
 
@@ -115,11 +114,11 @@ $ mvn install - command executes below "build life cycle phases" automatically.
 		prepares project with initial pre-
 		requisites ex: creating necessary directory structure (i.e. target directory)
 	- validate
-		validate project's folder structure
+		validates project's folder structure
 				
 	- compile
 		compiles "main" java code.
-	- test-compile
+	- testCompile
 		compiles "test" java code
 	- test
 		Runs the test cases and generates test reports.
@@ -154,68 +153,18 @@ first time when we run 'mvn install' command, Maven downloads all missing depend
 So, we need to have internet when we run 'mvn install' command first time.
 
 
-#
+#8
 Understanding pom.xml file structure
 
-#10
+#9
 Artifact path in local repository .m2
  $USER_HOME/.m2/repository/groupId/artifactId/version/jar-OR-war-file
 
 - Package naming convention:
 	artifactId-version.jar/war
 
-DAY-4:
-#11:	
-Maven has "Automatic Dependency resolution" feature
-	
-	- Direct dependency
-	- Transitive dependency (A -> B, B -> C,  A -> B & C)
-	  ( B is direct dependency for A and C is Transitive dependecy for A)
-	  ( To compile AppTest.java, we need Junit.jar. So Junit.jar becomes direct dependency.
-	    To execute Junit.jar, we need hamcrest.jar. So hamcrest.jar becomes transitive 
-	    dependency )
-
-Maven way of dependency addition, detection from different repositories.
-
-
-#12
-Maven repositories
-	- Central
-	- Private ( Nexus/Jfrog-atifactrory tools )
-	- Local (.m2)
-
-#13
-	$ mvn deploy (uploads jar files to private (nexus) repository)
-
-#14
-"mvn clean"
-
-#
-Build types
-        - Complete Build
-        - Incremental Build
-        - Daily Build
-        - Nightly Build
-        - Production Build
-        - hot-fix Build
-        
-
-# Skip test cases
-$ mvn install -DskipTests (skip test cases execution)
-$ mvn install -Dmaven.test.skip=true (skips compilation and test case execution)
-
-$ mvn compiler:testCompile (Compiles only testing code)
-$ mvn surefire:test        (Executes the test cases and generates reports)
-
-
-#18
-Where Maven's coordinates / GAV parameters are helpful?
-	- To decide artifact storage path in local repository.
-	- To decide jar/war name
-	- To define a dependency in pom.xml file.
-
-
-#19
+DAY-3:
+#11
 PROJECT-02: WEB Application Build and Deployment.
 ------------
 Goal: 
@@ -264,7 +213,7 @@ Syntax:
 [http://TomcatServerIP:Port/WarFilename]
 
 
-#26
+#12
 Project:3(Real-time End-to-End Build and Deployment Process)
 =================================
 Goals: 
@@ -299,6 +248,7 @@ Tomcat by default runs on port 8080. So application can be accessed with below U
 
 	ex: http://IPAddress:8080/gamutgurus
  	    http://localhost:8080/gamutgurus (If application is deployed in local machine)
+
 
 6. NOTE:
 In case there is any issue in the application, errors will be logged in 
