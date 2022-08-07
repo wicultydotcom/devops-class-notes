@@ -1,17 +1,47 @@
-						Installing Kubernetes Using Kubeadm
-					===========================================
-#
+Installing Kubernetes Using Kubeadm
+===========================================
+
 Topic: Setting up Control-plane/Master node
 #############################################
 1)
-# Install container runtime - Docker
+# Install container runtime - containerd
 Follow this source.
 Source:
-https://docs.docker.com/install/linux/docker-ce/ubuntu/
- $ curl -fsSL https://get.docker.com -o get-docker.sh
- $ sudo sh get-docker.sh
+https://kubesimplify.com/kubernetes-containerd-setup OR Type below commands
+Commands:
+- cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+- sudo modprobe overlay
+- sudo modprobe br_netfilter
+
+# Setup required sysctl params, these persist across reboots.
+- cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Apply sysctl params without reboot
+- sudo sysctl --system
+
+#Install and configure containerd 
+- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+- sudo apt update -y
+- sudo apt install -y containerd.io
+- sudo mkdir -p /etc/containerd
+- containerd config default | sudo tee /etc/containerd/config.toml
+
+#Start containerd
+- sudo systemctl restart containerd
+- sudo systemctl enable containerd
+
+
 2)
-# Install Kubeadm
+# Install Kubeadm, Kubelet & Kubectl
 Follow this source or below commands.	
 
 Source:
@@ -62,8 +92,8 @@ O/P:
 O/P:
 $ kubectl get pods --all-namespaces
 NAMESPACE NAME READY STATUS RESTARTS AGE
-kube-system coredns-...vt 0/1 ContainerCreating 0 8m33s
-kube-system coredns-...xw 0/1 ContainerCreating 0 8m33s
+kube-system coredns-...vt 0/1 Pending 0 8m33s
+kube-system coredns-...xw 0/1 Pending 0 8m33s
 kube-system etcd... 1/1 Running 0 7m46s
 kube-system kube-api... 1/1 Running 0 7m36s
 
@@ -90,20 +120,52 @@ Topic: Worker Node Setup & Joining to the Master:
 # Create a worker node machine in GCP / AWS cloud platform.
 
 2
-# Install kubeadm
+# Install kubeadm, Kubelet, Kubectl
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
 
 3
-# Install container runtime
-    https://docs.docker.com/install/linux/docker-ce/ubuntu/
+# Install container runtime that is "containerd"
+Follow this source.
+Source:
+https://kubesimplify.com/kubernetes-containerd-setup 
+OR Type below commands
+Commands:
+- cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+- sudo modprobe overlay
+- sudo modprobe br_netfilter
+
+# Setup required sysctl params, these persist across reboots.
+- cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.ipv4.ip_forward                 = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+# Apply sysctl params without reboot
+- sudo sysctl --system
+
+#Install and configure containerd 
+- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+- sudo apt update -y
+- sudo apt install -y containerd.io
+- sudo mkdir -p /etc/containerd
+- containerd config default | sudo tee /etc/containerd/config.toml
+
+#Start containerd
+- sudo systemctl restart containerd
+- sudo systemctl enable containerd
 
 4
-# To bootstrap a Kubernetes worker node and join it to the cluster run below command from $kubeadm init output.
-Note: bootstrap: It automatically installs kubectl and kubelet.
+# To join Kubernetes worker node with control-plane node, run below command as root user.
 
-Note: Below Bootstrap token will be different for your Control-plane/Master node. Use the one which you have copied at step:3.
+Note: Below command/token will be different for your Control-plane/Master node. Use the one which you have copied at step:3.
 
-kubeadm join 10.128.0.18:6443 --token 9ril81.t4k4sqh1ionqv1om \
+$ sudo kubeadm join 10.128.0.18:6443 --token 9ril81.t4k4sqh1ionqv1om \
     --discovery-token-ca-cert-hash sha256:de57d9e08877db501a8b503db3ee91596f8f5657878c3087bc0343ece7df3eb2
 	
 # Verify node Join (Run below in Control-plane node)
@@ -264,8 +326,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: nginx-prod-deploy
-    labels:
-      app: nginx-app-prod
+
 spec:
   replicas: 6
   selector:
@@ -292,7 +353,7 @@ $ kubectl get pods --watch
 # Login to pods and verify nginx application
 $ kubectl get pods -o wide
 $ kubectl exec -it nginx-deploy-5f654bcccd-27xtg /bin/bash
-
+	
 # launch application from individual Pod
 $ curl http://10.44.0.1:80
 $ curl http://pod_ip:80
@@ -324,6 +385,7 @@ spec:
   selector:
     app: nginx-pod
   type: NodePort
+
   ports:
   - nodePort: 31000
     port: 80
@@ -340,6 +402,7 @@ Click on Navigation menu(three lines on top left) --> Go to VPC Network --> Fire
 http://34.93.139.52:31000/
 http://WorkerNodeIP:Node-port/
 
+--weekend-8:30 PM--
 
 Project-3 [GamutKart]
 ==========================
@@ -370,7 +433,7 @@ spec:
           args:  ["-c", "/root/apache-tomcat-8.5.38/bin/startup.sh; while true; do sleep 1; done;"]
 	
 # Execute deployment
-$ kubectl create -f  deploy-gamutkart.yml
+$ kubectl apply -f  deploy-gamutkart.yml
 
 # Creating service for GamutKart
 $ vim service-gamutkart.yml
@@ -442,12 +505,3 @@ $ kubectl scale deployment/gamutkart-deploy --replicas=2
 ")
 --> List all Pods which have the label. Example, in above case it is: app=nginx-pod.
 	$ kubectl get pods  -l app=nginx-pod
-
-
-=================
-1 - Namespaces
-2 - Statefull Vs Stateless Applications
-3 - Volumes - pending
-4 - Secrets
-
-
