@@ -7,7 +7,8 @@ Topic: Setting up Control-plane/Master node
 # Install container runtime - containerd
 Follow this source.
 Source:
-https://kubesimplify.com/kubernetes-containerd-setup OR Type below commands
+https://kubesimplify.com/kubernetes-containerd-setup
+OR Type below commands
 Commands:
 - cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
@@ -51,6 +52,9 @@ Commands:
 - sudo apt-get update
 
 - sudo apt-get install -y apt-transport-https curl
+
+Note: Create this directory if it's not present already
+$ mkdir -p /etc/apt/keyrings
 
 - Add repository keys to download tools:
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -270,6 +274,8 @@ $ kubectl get pods
 $ kubectl delete pods nginx-pod
 $ kubectl delete -f pod.yml
 
+--POD--
+
 NOTE:
 kubelet takes the PodSpec and is responsible for pulling all images and starting all containers in the Pod.
 
@@ -298,13 +304,15 @@ Project-2 [Nginx]
 	Creating Deployments & Services
 #############################################
 
-- Pods don’t self-heal, they don’t scale, and they don’t allow for easy updates
+- Pods don’t self-heal, they don’t auto-scale, and they don’t allow for easy updates.
 
-- Deployments do all things like
-	- "auto scale" (scale-up/down)
-	- "self-heal"
-	- "rolling updates"
-	- "roll backs"
+- So we use K8S Deployment Object to create the Pods in real-time. If we create the Pods using Deployment Object, we get below advantages..
+	- Auto scale (You can scalp up and scale down the pods very easily)
+	- Self-heal (Pods can be self-healed automcatically)
+	- Rolling updates (You can deploy the new code / new image very easily if Pods are created using Deployments )
+	- Roll backs (Role-back become very easy as you can role-back the deployment instead of rolling-back Pods one by one)
+	- Creating End-pod (LB URL) of application: Pods can be exposed very easily as you just need to give deployment to the Service 
+	  instead adding Pod's one by one to LB/Service.
 	
 - That's why we almost always deploy Pods via 'Deployments"
 
@@ -345,7 +353,7 @@ spec:
 
 		  
 # Creating deployment
-$ kubectl create -f deploy-nginx.yml
+$ kubectl apply -f deploy-nginx.yml
 
 # Check pod creations
 $ kubectl get pods --watch
@@ -384,6 +392,7 @@ metadata:
 spec:
   selector:
     app: nginx-pod
+
   type: NodePort
 
   ports:
@@ -396,13 +405,12 @@ $ kubectl create -f service-nginx.yml
 
 # Enable networking
 Click on Navigation menu(three lines on top left) --> Go to VPC Network --> Firewal rules --> select on one existing rule --> edit --> Source IP ranges
---> 0.0.0.0/0 --> In 'Specified protocols and ports', write this range "0-65535"
+--> 0.0.0.0/0 --> In 'Specified protocols and ports', write this range "31000"
 
 # Access the application from browser using worker-node port
 http://34.93.139.52:31000/
 http://WorkerNodeIP:Node-port/
 
---weekend-8:30 PM--
 
 Project-3 [GamutKart]
 ==========================
@@ -427,6 +435,13 @@ spec:
       containers:
         - name: gamutkart-container
           image: nageshvkn/gamutkart-img
+	  resources:
+      	    requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           ports:
           - containerPort: 8080
           command: ["/bin/sh"]
@@ -447,7 +462,7 @@ metadata:
 spec:
   selector:
     app: gamutkart-app
-  type: NodePort
+  type: LoadBalancer
   ports:
   - nodePort: 31000
     port: 8080
@@ -455,7 +470,7 @@ spec:
 	
 
 # Creating the service
-$ kubectl create -f service-gamutkart.yml
+$ kubectl apply -f service-gamutkart.yml
 
 
 #
@@ -505,3 +520,23 @@ $ kubectl scale deployment/gamutkart-deploy --replicas=2
 ")
 --> List all Pods which have the label. Example, in above case it is: app=nginx-pod.
 	$ kubectl get pods  -l app=nginx-pod
+
+Autoscaling
+=================
+1. Autoscale Pods/Deployments
+--
+# How do you autoscale the deployment?
+$ kubectl autoscale deployment <deployment-name> --max=4 --cpu-percentage=70
+
+- The above command, maximum creates 4 instances of your application and autoscales the instances whenever CPU utilisation touches to 70% threshold.
+
+- When you run the autoscale command, internally it creates Horizontal Pod Autoscaler (HPA). HPA takes care of autoscaling activity.Check it using below command.
+$ kubectl get hpa
+
+2. Autoscale Kubernetes Cluster
+--
+- We need to also have enough number of Worker nodes to supply compute resources (RAM/CPU) to Pods as Pods use WorkerNode's compute.
+
+- So, using bellow command, you can autoscale WorkerNodes.
+$ gcloud container clusters update cluster-name --enable-autoscaling --min-nodes=1 --max-nodes=10
+
