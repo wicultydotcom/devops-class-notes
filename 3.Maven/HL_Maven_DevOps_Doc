@@ -1,15 +1,23 @@
 			MAVEN				
 DAY-1:		    ============
-#1
-	Java Build and Deployment End-To-End Workflow.
+#
+	Java application Build and Deployment End-To-End Workflow.
 
-#2
+#
 Basics
 	- Java program
 	- manual compilation
 
-#3
+#
+Java Build Process
+A.java --> A.class  -->   A.jar   ==> application.war
+
+
+#
 What is Maven? Why we need a build tool?
+
+#
+Application Environments
 
 
 #4
@@ -21,7 +29,7 @@ Maven is developed in Java. So to run maven we need to  have JDK installed.
 JDK Installation
 --
 $ sudo apt-get update
-$ sudo apt-get install openjdk-8-jdk
+$ sudo apt-get install openjdk-11-jdk
 
 
 JDK Un-Installation
@@ -51,19 +59,20 @@ which mvn
 #5 TEST YOUR KNOWLEDGE
         - Build and Deployment E2E work-flow and basics
 	- What is compilation & why we compile the source code?
-	- Packaging sequence for Java application
+	- Build process of Java application (Packaging sequence)
 	- What is Build
 	- What is Deployment
-	- Environment
+	- Environments
 	- Dev, QA & DevOps teams Interaction and Collaboration.
+
 
 DAY-2:
 #6
 Maven's standard project layout
 =================================
-Project creation:
+Project Structure:
 -----------------
-java projects which are created by maven, ideally follows below project folder structure.
+java projects which are built by maven, ideally follows below project folder structure.
 	
 		flipkart
 		   |
@@ -89,8 +98,9 @@ pom.xml  - Maven's build file using which we can
 				deployments...etc.
 
 
+
 #7
-Building the maven project:
+Building a Project using Maven:
 -----------------------
 
 # Install git
@@ -109,28 +119,22 @@ Building the project using Maven. Use below command.
 
 
 $ mvn install - command executes below "build life cycle phases" automatically. 
-
-	- initialize
-		prepares project with initial pre-
-		requisites ex: creating necessary directory structure (i.e. target directory)
-	- validate
-		validates project's folder structure
 				
 	- compile
-		compiles "main" java code.
+		during this phase, maven compiles "main" java code.
 	- testCompile
-		compiles "test" java code
+		during this phase, maven compiles "test" java code
 	- test
-		Runs the test cases and generates test reports.
+		during this target, Maven runs the test cases and generates test reports.
 	- package
-		creates jar/war.
+		this phase creates jar/war based not he configuration that are defined in pom.xml file
 	- install
-		copy built artifacts i.e jar/war file into local repository $USER_HOME/.m2
+		this phase, will copy built artifacts i.e jar/war file into local repository $USER_HOME/.m2
 		folder.
 
 
 #
-Verify Built artifacts:
+Verify Built Artifacts:
 --------------------------
 Go to "target" folder and observe below.
 	
@@ -163,12 +167,16 @@ Artifact path in local repository .m2
 - Package naming convention:
 	artifactId-version.jar/war
 
+
+# Dependencies
+
+
 DAY-3:
 #11
 PROJECT-02: WEB Application Build and Deployment.
 ------------
 Goal: 
-	- Perform end-to-end build and deployment for flipkart web application
+	- Perform end-to-end build and deployment for iflipkart web application
 	- Handling build and deployment for any web application
 
 Steps:
@@ -206,7 +214,7 @@ $ cd $TOMCAT_HOME/bin
 $ ./startup.sh
 
 #
-Launch application with below URL.
+Launch application with below URL from same machine's browser as IP is not public and tomcat is installed locally.
 http://localhost:8080/flipkart
 
 Syntax:
@@ -234,29 +242,34 @@ $ git clone https://github.com/nageshvkn/gamutkart2.git
 Build "gamutkart" application using below command.
 $ mvn install
 
-4. 
-Deploy 'gamutkart.war' application to remote server deployment location(i.e $TOMCAT_HOME/webapps) using below command.
-	$ cp target/gamutgurus.war $TOMCAT_HOME/webapps
+4. Make sure that gamutkart.war file is created in 'target' directory
 
-4A.
-After the deployment, we need start the server using below tomcat startup comamnd.
-	$ cd $TOMCAT_HOME/bin
-	$ ./startup.sh
+5. Install JDK using below commands
+  $ sudo apt-get update
+  $ sudo apt-get install openjdk-11-jdk
 
-5.
-Tomcat by default runs on port 8080. So application can be accessed with below URL.
+6. Download tomcat from below URL and extract to some location
+https://tomcat.apache.org/download-90.cgi
 
-	ex: http://IPAddress:8080/gamutgurus
- 	    http://localhost:8080/gamutgurus (If application is deployed in local machine)
+7. Copy/deploy gamutkart.war into $TOMCAT_HOME/webapps
 
+8. Start tomcat server using below command
+   $ cd TOMCAT_HOME/bin
+   $ ./startup.sh
+	
+9. Launch application using below URL
 
-6. NOTE:
+   http://localhost:8080/gamutkart
+
+URL Syntax: http://IP:8080/gamutkart
+
+#			:
 In case there is any issue in the application, errors will be logged in 
 "$TOMCAT_HOME/logs/catalina.2017-03-24.log" file.
 
 We can check this file and if there are any errors/exceptions, we provide this information to developers.
 
-7.
+#
 Note: If you want to change the port number, Go to below file and change the port number where you see something like this. ( port="8080" protocol="HTTP/1.1")
 	$ vim $TOMCAT_HOME/conf/server.xml
 

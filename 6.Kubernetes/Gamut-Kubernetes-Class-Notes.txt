@@ -7,38 +7,7 @@ Topic: Setting up Control-plane/Master node
 # Install container runtime - containerd
 Follow this source.
 Source:
-https://kubesimplify.com/kubernetes-containerd-setup OR Type below commands
-Commands:
-- cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
-overlay
-br_netfilter
-EOF
-
-- sudo modprobe overlay
-- sudo modprobe br_netfilter
-
-# Setup required sysctl params, these persist across reboots.
-- cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-
-# Apply sysctl params without reboot
-- sudo sysctl --system
-
-#Install and configure containerd 
-- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-- sudo apt update -y
-- sudo apt install -y containerd.io
-- sudo mkdir -p /etc/containerd
-- containerd config default | sudo tee /etc/containerd/config.toml
-
-#Start containerd
-- sudo systemctl restart containerd
-- sudo systemctl enable containerd
-
+https://kubesimplify.com/kubernetes-containerd-setup
 
 2)
 # Install Kubeadm, Kubelet & Kubectl
@@ -46,25 +15,6 @@ Follow this source or below commands.
 
 Source:
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/	
-
-Commands:
-- sudo apt-get update
-
-- sudo apt-get install -y apt-transport-https curl
-
-- Add repository keys to download tools:
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-
-- Add repository:
-cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-- sudo apt-get update
-
-- sudo apt-get install -y kubelet kubeadm kubectl
-
-- sudo apt-mark hold kubelet kubeadm kubectl
-
 
 #3) Initialize a new Kubernetes control-plane node
 
@@ -99,9 +49,11 @@ kube-system kube-api... 1/1 Running 0 7m36s
 
 #7) Create Pod Network. You must install a pod network add-on so that your pods can communicate with each other. (As per kubeadm init output)
 
-Source: https://www.weave.works/docs/net/latest/kubernetes/kube-addon/#install
+Source: https://github.com/rajch/weave#using-weave-on-kubernetes [Take this link from $ kubeadm init output]
 
-$ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+Run below command to install a Pod network add-on
+
+$ kubectl apply -f https://reweave.azurewebsites.net/k8s/v1.28/net.yaml
 
 
 #8) Check if the status of Master is changed from 'NotReady' to 'Ready'
@@ -128,37 +80,6 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-ku
 Follow this source.
 Source:
 https://kubesimplify.com/kubernetes-containerd-setup 
-OR Type below commands
-Commands:
-- cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
-overlay
-br_netfilter
-EOF
-
-- sudo modprobe overlay
-- sudo modprobe br_netfilter
-
-# Setup required sysctl params, these persist across reboots.
-- cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.ipv4.ip_forward                 = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-EOF
-
-# Apply sysctl params without reboot
-- sudo sysctl --system
-
-#Install and configure containerd 
-- curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-- sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-- sudo apt update -y
-- sudo apt install -y containerd.io
-- sudo mkdir -p /etc/containerd
-- containerd config default | sudo tee /etc/containerd/config.toml
-
-#Start containerd
-- sudo systemctl restart containerd
-- sudo systemctl enable containerd
 
 4
 # To join Kubernetes worker node with control-plane node, run below command as root user.
@@ -167,6 +88,10 @@ Note: Below command/token will be different for your Control-plane/Master node. 
 
 $ sudo kubeadm join 10.128.0.18:6443 --token 9ril81.t4k4sqh1ionqv1om \
     --discovery-token-ca-cert-hash sha256:de57d9e08877db501a8b503db3ee91596f8f5657878c3087bc0343ece7df3eb2
+
+NOTE: above token is valid only for 24 hours i.e same token you can't use to join worker nodes after 24 hours. If you are joining worker node to Master after 24 hours, use below command to create a new token.
+$ kubeadm token create --print-join-command (Use this newly generated command for joining the worker-node)
+
 	
 # Verify node Join (Run below in Control-plane node)
 
@@ -253,22 +178,25 @@ $ curl http://POD-IP:Server-Port
 
 
 - You can also login into the Pod container to get more information.
-$ kubectl exec -it nginx-pod /bin/bash
+$ kubectl exec nginx-app -it -- /bin/bash
 	Note: Let's add some code and launch our nginx application
-	- $ echo "Gamut Gurus Technologies" > /usr/share/nginx/html/index.html 
+	- $ echo "Wiculty Learning Solutions" > /usr/share/nginx/html/index.html 
 
 - Launch nginx application
 $ curl http://10.44.0.1:80
 
 - Login into a specific container in case you have multi container Pod
   using --container or -c option.
-$ kubectl exec -it nginx-pod --container nginx-container /bin/bash
+
+$ kubectl exec nginx-app -c container-name -it -- /bin/bash
 
 #
 3.) Deleting a Pod
 $ kubectl get pods
 $ kubectl delete pods nginx-pod
 $ kubectl delete -f pod.yml
+
+--POD--
 
 NOTE:
 kubelet takes the PodSpec and is responsible for pulling all images and starting all containers in the Pod.
@@ -293,20 +221,28 @@ $ kubectl get pods --watch (monitor the status continuously)
 $ kubectl describe pod nginx-pod
 
 #
-Project-2 [Nginx]
+Project-1 [Nginx]
 #############################################
 	Creating Deployments & Services
 #############################################
 
-- Pods don’t self-heal, they don’t scale, and they don’t allow for easy updates
+- Pods don’t self-heal, they don’t auto-scale, and they don’t allow for easy updates.
 
-- Deployments do all things like
-	- "auto scale" (scale-up/down)
-	- "self-heal"
-	- "rolling updates"
-	- "roll backs"
+- So we use K8S Deployment Object to create the Pods in real-time. If we create the Pods using Deployment Object, we get below advantages..
+	- Auto scale (You can scalp up and scale down the pods very easily)
+	- Self-heal (Pods can be self-healed automcatically)
+	- Rolling updates (You can deploy the new code / new image very easily if Pods are created using Deployments )
+	- Roll backs (Role-back become very easy as you can role-back the deployment instead of rolling-back Pods one by one)
+	- Creating End-pod (LB URL) of application: Pods can be exposed very easily as you just need to give deployment to the Service 
+	  instead adding Pod's one by one to LB/Service.
 	
 - That's why we almost always deploy Pods via 'Deployments"
+
+# Test Rolling Updates
+kubectl set image deployments/nginx-dep nginx-c=nageshvkn/gamutkart-imgcamp:v2
+
+# Test Rollback
+
 
 #
 Creating Deployments
@@ -318,7 +254,7 @@ $ kubectl get nodes
 $ kubectl get pods
 
 # Create the deployment
-$ kubectl create -f deploy-nginx.yml
+$ kubectl apply -f deploy-nginx.yml
 
 vim deploy-nginx.yml
 -------
@@ -345,7 +281,7 @@ spec:
 
 		  
 # Creating deployment
-$ kubectl create -f deploy-nginx.yml
+$ kubectl apply -f deploy-nginx.yml
 
 # Check pod creations
 $ kubectl get pods --watch
@@ -384,6 +320,7 @@ metadata:
 spec:
   selector:
     app: nginx-pod
+
   type: NodePort
 
   ports:
@@ -396,15 +333,14 @@ $ kubectl create -f service-nginx.yml
 
 # Enable networking
 Click on Navigation menu(three lines on top left) --> Go to VPC Network --> Firewal rules --> select on one existing rule --> edit --> Source IP ranges
---> 0.0.0.0/0 --> In 'Specified protocols and ports', write this range "0-65535"
+--> 0.0.0.0/0 --> In 'Specified protocols and ports', write this range "31000"
 
 # Access the application from browser using worker-node port
 http://34.93.139.52:31000/
-http://WorkerNodeIP:Node-port/
+http://WorkerNodeIP:NodePort
 
---weekend-8:30 PM--
 
-Project-3 [GamutKart]
+Project-2 [GamutKart]
 ==========================
 # Creating deployment for GamutKart
 $ vim deploy-gamutkart.yml
@@ -426,13 +362,20 @@ spec:
     spec:
       containers:
         - name: gamutkart-container
-          image: nageshvkn/gamutkart-img
+          image: nageshvkn/gamutkart-img-k8s
+	  resources:
+      	    requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
           ports:
           - containerPort: 8080
           command: ["/bin/sh"]
           args:  ["-c", "/root/apache-tomcat-8.5.38/bin/startup.sh; while true; do sleep 1; done;"]
 	
-# Execute deployment
+# Execute 	
 $ kubectl apply -f  deploy-gamutkart.yml
 
 # Creating service for GamutKart
@@ -447,7 +390,7 @@ metadata:
 spec:
   selector:
     app: gamutkart-app
-  type: NodePort
+  type: LoadBalancer
   ports:
   - nodePort: 31000
     port: 8080
@@ -455,7 +398,7 @@ spec:
 	
 
 # Creating the service
-$ kubectl create -f service-gamutkart.yml
+$ kubectl apply -f service-gamutkart.yml
 
 
 #
@@ -505,3 +448,70 @@ $ kubectl scale deployment/gamutkart-deploy --replicas=2
 ")
 --> List all Pods which have the label. Example, in above case it is: app=nginx-pod.
 	$ kubectl get pods  -l app=nginx-pod
+
+Autoscaling
+=================
+1. Autoscale Pods/Deployments
+--
+# How do you autoscale the deployment?
+$ kubectl autoscale deployment <deployment-name> --max=4 --cpu-percentage=70
+
+- The above command, maximum creates 4 instances of your application and autoscales the instances whenever CPU utilisation touches to 70% threshold.
+
+- When you run the autoscale command, internally it creates Horizontal Pod Autoscaler (HPA). HPA takes care of autoscaling activity.Check it using below command.
+$ kubectl get hpa
+
+2. Autoscale Kubernetes Cluster
+--
+- We need to also have enough number of Worker nodes to supply compute resources (RAM/CPU) to Pods as Pods use WorkerNode's compute.
+
+- So, using bellow command, you can autoscale WorkerNodes.
+$ gcloud container clusters update cluster-name --enable-autoscaling --min-nodes=1 --max-nodes=10
+
+
+=====
+How to validate Yaml
+
+=====
+- Stateless Vs State-full applications
+- PV & PVC
+- StatefullSet
+
+3. ZDR - Rolling update
+7. Autoscaling
+8. Roleback
+
+5. Helm Charts
+
+- Namespace
+
+1. Secret to connect to private or any repository
+2. ConfigMaps
+
+
+
+
+8. Ingress
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,10 +1,15 @@
                                         GIT
                                   =================
                                                              
-# What is SCM/VCS/RCS. Why we need VCS.
-	VCS features.
+# What is SCM/VCS/RCS. Why we need SCM.
+	SCM tool features.
 	
 --> Refer 'ProGit' for official documentation.
+
+
+#
+Git Architecture
+- end-to-end git work-flow
 
 
 #
@@ -18,10 +23,7 @@ Verify Installation:
 
 GIT Uninstallation:
 $ sudo apt-get remove git
-
-#
-Git Architecture
-- end-to-end git work-flow
+	
 
 #
 Creating remote repository in github
@@ -43,13 +45,16 @@ Creating remote repository in github
 6. Create some sample code and submit the code to remote repo.
 	--> touch Login.java
 	--> git add Login.java
-	--> git commit Login.java -m "login module code"
-	--> git push  --> [refer below topic to generate token as password]
+	--> git commit Login.java -m "login module code" [when you commit first time it asks for username and email. Set it up using below steps under "Setting up mandatory configurations" SECTION]
+	--> git push  --> [refer below topic [Setting up token/password] to generate token or password]
 
-	--> git log Login.java
+	--> git log Login.java (check the history of the file)
+
+7. After this, you can clone your repository in another directory and check if you get Login.java as your repository has a file now.
+
 
 #
-Settng up token/password to access GitHub
+Setting up token/password to access GitHub
 ========================================
 1. go to https://github.com
 
@@ -65,26 +70,8 @@ Note: in the above command
 - github.com/nageshvkn/wiculty29.git is your repository path. don't give 'https'
 
 
-#
-Staging Index/Stage
-
-- Skip staging
-	$ git commit -am "submit all pending changes"
-
-Note: If you want to skip the staging, you need to commit all pending changes.
-      For new file, you have to go through the 'stage' process.
-
-
-# Show all the files that are modified as part of a commit (with content)
-git show <Commit Id>
-git show b85a6e123
-
-#
-- Git Commit structure
-	SHA value / commit ID
-	User & email
-	Date & time stamp
-	Commit message
+Note: If you want to store your Git credentials, use below command
+$ git config --global credential.helper store
 
 
 #
@@ -100,16 +87,52 @@ Git stores all configurations in below file
 "$USER_HOME/.gitconfig"
 
 
+*** pending ***
+#
+Staging Index/Stage
+
+- Skip staging
+	$ git commit -am "submit all pending changes"
+
+Note: If you want to skip the staging, you need to commit all pending changes.
+      For new file, you have to go through the 'stage' process.
+*** pending ***
+
+
+# Show all the files that are modified as part of a commit (with content)
+git show <Commit Id>
+git show b85a6e123
+
+#
+- Git Commit structure
+	SHA value / commit ID
+	User & email
+	Date & time stamp
+	Commit message
+
 # Understand Git Jargon.
 	- Remote Repository
 	- Working Directory
 	- Local Repository
 	- Stage/"Staging Index"
-	- SHA
+	- SHA/Commit ID
 
+
+*
 # History
 	$ git log Login.java
 	$ git log
+
+- Filter the commits based on the user name
+git log --author "Sally" 
+
+- Filter the commit based on commit message
+git log --grep "123"
+
+- Qn: show me all the commits made by user Sally and has bug-123 in commit message
+git log --author "Sally" --grep "bug-123"
+
+
 
 # GIT Commands
 1.  
@@ -122,12 +145,13 @@ $ git diff --staged Login.java
 # See the content change of a file after the commit
 $ git show 123abc456
 
+
 2. Deleting a file
 
         A.) git rm OMS.java
 	    git commit OMS.java -m "comment"
 	    git push
-	    
+
  
 3. Renaming a file/folder
 	A.) git mv Login.java Login1.java
@@ -138,12 +162,16 @@ Git will carry the history of old file to new file. To check complete history..
 	$ git log --follow Login1.java
 
 
-# Undoing the changes:
-undo/revert local changes from source area
-	$ git restore LoginWeb.java
+-----
 
+# Undoing the changes:
 Unstage the changes from STAGE area
 	$ git restore --staged LoginWeb.java
+
+# Revert the changes from the Source area
+	$ git restore Login.java
+	
+Note: Once the changes are removed from source area, you can't get those changes back. So, better you take a backup of the file before you apply 'git restore' command.
 
 
 # BRANCHING
@@ -167,6 +195,7 @@ Unstage the changes from STAGE area
 # Creating and switching to a newly created branch
 	$ git checkout -b dev_1.2.4
 
+**
 # How do you clone a remote repository with a particular branch as default
 	$ git clone -b dev_1.2.4 https://github.com/nageshvkn/flipkart899.git
 
@@ -181,42 +210,45 @@ Unstage the changes from STAGE area
 MERGING:
 =============
 
-# List all the branches
-	$ git branch
+To practice merge, we need to make sure that repository files are in conflict situation.
 
-# Create a new branch
-	$ git branch dev_1.2.3
+# Preparing the repository to produce conflict situation.
 
+1. Take a file from master ex: Login.java. Add some code as shown below.
+Login.java
+--
+ublic class Login {
+public static void main() {
+    int i;
 
-# Take a file which is common in master and dev_1.2.3 branch.
-  ex: Login.java
+    for(i=0;i<=10;i++){
+        System.out.println("Number: " + i);
+    }
+}
+}
 
-# Make sure Login.java has below content in master and dev_1.2.3 branch
-	Login.java
-		line#5 --> int a = 10;
-	
-# To create a conflict situation, we need to modify same line in two branches with different content.
+2. Create a new branch using $ git branch dev-1.2.5.
+   Push it to remote repository using $ git push origin dev-1.2.5.
 
-	ex: Login.java (master)
-			line#5 --> int a =100;
-		
-		Login.java (dev_1.2.3)
-			line#5 --> int a = 200;
+After creating this dev-1.2.5 branch, you see the same code in both branches Login.java file.
 
+3. Like a developer, modify 5th line from i<=10 TO i<=20 Login.java file of dev-1.2.5 branch. 
 
-# Now merge the code from dev_1.2.3 to master branch
-  Before merge, make sure that you are on target branch i.e master (source branch: dev_1.2.3)
-	$ git checkout master
+4. Similarly, modify 5th line from i<=10 TO i<=30 in Login.java file of master branch.
 
-# You have master code now, since currently checkout branch is master. Now bring/merge the changes from dev_1.2.3 to master by running below command. 
-Git merge command merges the changes from dev_1.2.3 to master.
+5 Activate source branch i.e dev-1.2.5 using $ git checkout dev-1.2.5
 
-	$ git merge dev_1.2.3
+6. Make sure that you are on master branch (Run $git checkout master) to be on the master.
+
+# You have master code now. Now merge the changes from dev_1.2.5 to master by running below command. 
+Git merge command merges the changes from dev_1.2.5 to master.
+
+	$ git merge dev_1.2.5
 
 # Run git status command to list conflict file
 
 #
-  Resolve the conflict and commit the merge
+  Resolve the conflict be removing conflict markers (i.e <<, >> & == symbols)and commit the merge
 
 # Run git push command to move the merge to Remote.
 
@@ -234,7 +266,33 @@ If two users modify the same file in source and target branches and if the same 
 Note:
 Use below command to find the owner of conflict code. How do you find the user who modified/added conflicted code?
 	$ git blame Login.java
-          
+
+#
+REBASE:
+========
+
+
+#
+git reset & revert command - Nagesh to come up with an example
+
+
+# GIT STASH
+- Modify some file example: LoginUser.java in Master branch. Don't commit.
+- Try to switch to example: dev-1.2.5 branch. You can't switch as it will overwrite Master branches LoginUser.java
+- Now, in order to switch to the dev-1.2.5 branch, you need to stash all your changes (stash meaning, archive the changes in some temp directory)
+- Now run $ git checkout dev-1.2.5 (you will be able to switch now.). Finish your work in dev-1.2.5 and commit your changes.
+- Now you can resume with your work in Master branch by bringing stashed changes back.
+- First, switch to master branch and run below command to unstash the changes.
+- $ git stash pop
+- You can stash multiple changes. And If you want to see all changes in the stash, use below command
+ $ git stash list
+- If you want to pop a particular stashed item from the list, use below command
+ $ git stash pop 0 (git stash list command shows all the stashed changes with numbers like 0,1,2 .etc.) 
+
+
+# .gitignore Concept
+
+
 #	
 git remote
 	PULL
@@ -242,3 +300,9 @@ git remote
 	
 	PUSH
 	CLONE
+
+======
+1. Merge, Rebase & cherry-pick - Nagesh to come up with an example
+2. git reset & revert command - Nagesh to come up with an example
+3. Git fetch - understand better.
+
