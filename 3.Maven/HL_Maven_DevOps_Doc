@@ -18,6 +18,14 @@ What is Maven? Why we need a build tool?
 
 #
 Application Environments
+- Dev Environment
+- Test Environment
+- SIT (System Integration Testing) Environment
+- Regression Environment
+- Performance Environment
+- UAT (User Acceptance Testing) Environment
+- Pro-prod/Stage Environment
+- Production Environment
 
 
 #4
@@ -160,15 +168,13 @@ So, we need to have internet when we run 'mvn install' command first time.
 #8
 Understanding pom.xml file structure
 
+
 #9
 Artifact path in local repository .m2
  $USER_HOME/.m2/repository/groupId/artifactId/version/jar-OR-war-file
 
 - Package naming convention:
 	artifactId-version.jar/war
-
-
-# Dependencies
 
 
 DAY-3:
@@ -228,6 +234,7 @@ Goals:
 - Building the War for large scale real-time kinda application
 - Learning Deployments with a dedicated tomcat Server
 
+
 Steps:
 ----------
 #
@@ -272,5 +279,6 @@ We can check this file and if there are any errors/exceptions, we provide this i
 #
 Note: If you want to change the port number, Go to below file and change the port number where you see something like this. ( port="8080" protocol="HTTP/1.1")
 	$ vim $TOMCAT_HOME/conf/server.xml
+
 
 

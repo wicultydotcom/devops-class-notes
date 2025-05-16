@@ -1,6 +1,24 @@
 Installing Kubernetes Using Kubeadm
 ===========================================
 
+Creating VM in Google cloud
+##################
+1. In the Google cloud console, click on three lines (top, left)
+2. Go to 'Compute Engine' --> VM Instances
+3. Click on 'Create Instalnce'
+4. Give a machine name in 'Name' field (ex:master)
+5. Select machine size under 'Series' as 'N2' (Need minimum 2GB RAM & 2vCPU)
+6. On the left menu, select 'OS and Storage'
+7. To select OS for the VM, Under 'Operating system and storage', click on 'Change'
+8. Under 'Operating System' drop-down, select 'ubuntu'
+9. Under 'Version', select 'Ubuntu 24.10 (x86/64, amd64 oracular image ....)'
+   (basically, we need ubuntu 24.10 with x86/64 bit processor architecture)
+10. Click on 'select' butoon
+11. On left menu, click on 'Networking' and select 'Allow HTTP trafic' and 'Allow HTTPS trafic'
+12. And finally, click on 'create' button at the bottom 
+
+
+
 Topic: Setting up Control-plane/Master node
 #############################################
 1)
@@ -8,6 +26,7 @@ Topic: Setting up Control-plane/Master node
 Follow this source.
 Source:
 https://kubesimplify.com/kubernetes-containerd-setup
+
 
 2)
 # Install Kubeadm, Kubelet & Kubectl
@@ -454,16 +473,16 @@ Autoscaling
 1. Autoscale Pods/Deployments
 --
 # How do you autoscale the deployment?
-$ kubectl autoscale deployment <deployment-name> --max=4 --cpu-percentage=70
+$ kubectl autoscale deployment <deployment-name> --max=4 --cpu-percent=70
 
 - The above command, maximum creates 4 instances of your application and autoscales the instances whenever CPU utilisation touches to 70% threshold.
 
-- When you run the autoscale command, internally it creates Horizontal Pod Autoscaler (HPA). HPA takes care of autoscaling activity.Check it using below command.
+- When you run the autoscale command, internally it creates "Horizontal Pod Autoscaler" (HPA). HPA takes care of autoscaling activity.Check it using below command.
 $ kubectl get hpa
 
 2. Autoscale Kubernetes Cluster
 --
-- We need to also have enough number of Worker nodes to supply compute resources (RAM/CPU) to Pods as Pods use WorkerNode's compute.
+- We need to also have enough number of Worker nodes to supply compute resources (RAM/CPU) to Pods as Pods use WorkerNode's compute. In GKE cluster, Google cloud automatically takes care of WorkerNode's auto scaling. However, if you have a specific requirements, you can set up WorkerNode autoscaling.
 
 - So, using bellow command, you can autoscale WorkerNodes.
 $ gcloud container clusters update cluster-name --enable-autoscaling --min-nodes=1 --max-nodes=10
@@ -473,29 +492,25 @@ $ gcloud container clusters update cluster-name --enable-autoscaling --min-nodes
 How to validate Yaml
 
 =====
+5. Helm Charts
+
 - Stateless Vs State-full applications
 - PV & PVC
 - StatefullSet
 
 3. ZDR - Rolling update
-7. Autoscaling
-8. Roleback
-
-5. Helm Charts
 
 - Namespace
+
+8. Roleback
 
 1. Secret to connect to private or any repository
 2. ConfigMaps
 
-
-
-
 8. Ingress
 
 
-
-
+CKA
 
 
 

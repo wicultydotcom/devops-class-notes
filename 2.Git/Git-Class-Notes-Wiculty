@@ -87,18 +87,18 @@ Git stores all configurations in below file
 "$USER_HOME/.gitconfig"
 
 
-*** pending ***
 #
 Staging Index/Stage
+- Use case: Using stage option, we can logically group the changes related to a bug fix or feature development. This will help us to track the history of that bug fix or a feature development clearly. 
 
 - Skip staging
 	$ git commit -am "submit all pending changes"
 
 Note: If you want to skip the staging, you need to commit all pending changes.
       For new file, you have to go through the 'stage' process.
-*** pending ***
 
 
+*
 # Show all the files that are modified as part of a commit (with content)
 git show <Commit Id>
 git show b85a6e123
@@ -118,7 +118,6 @@ git show b85a6e123
 	- SHA/Commit ID
 
 
-*
 # History
 	$ git log Login.java
 	$ git log
@@ -152,7 +151,10 @@ $ git show 123abc456
 	    git commit OMS.java -m "comment"
 	    git push
 
+# revert
+$ git revert <Commit-Id>
  
+
 3. Renaming a file/folder
 	A.) git mv Login.java Login1.java
 	    git commit -m "rename Login"
@@ -162,24 +164,24 @@ Git will carry the history of old file to new file. To check complete history..
 	$ git log --follow Login1.java
 
 
------
 
 # Undoing the changes:
 Unstage the changes from STAGE area
 	$ git restore --staged LoginWeb.java
 
-# Revert the changes from the Source area
+# Undoing the changes from the Source area
 	$ git restore Login.java
 	
 Note: Once the changes are removed from source area, you can't get those changes back. So, better you take a backup of the file before you apply 'git restore' command.
 
+-----
 
 # BRANCHING
 	A. What is a branch?
 	B. Why and When we create a branch?
-	C. Branching Strategies
+	C. Branching Strategies / Models
 
-
+# 	
 # List all active branches in local repository
 	$ git branch
 	
@@ -195,7 +197,6 @@ Note: Once the changes are removed from source area, you can't get those changes
 # Creating and switching to a newly created branch
 	$ git checkout -b dev_1.2.4
 
-**
 # How do you clone a remote repository with a particular branch as default
 	$ git clone -b dev_1.2.4 https://github.com/nageshvkn/flipkart899.git
 
@@ -252,7 +253,6 @@ Git merge command merges the changes from dev_1.2.5 to master.
 
 # Run git push command to move the merge to Remote.
 
-
 # What is Conflict:
 If two users modify the same file in source and target branches and if the same line has different content, git can't decide which user's code it has to take. we call this situation as conflict.
 
@@ -267,31 +267,34 @@ Note:
 Use below command to find the owner of conflict code. How do you find the user who modified/added conflicted code?
 	$ git blame Login.java
 
-#
-REBASE:
-========
+
+# Difference between Git Merge & Rebase
+Merging:
+--
+- Merging creates a new commit (called merge commit) in the target branch (master,  if you are merging dev-1.2.5 into master) that combines the changes of both branches. The merge commit provides context about when the two branches are combined. This is very important information if you want to get the overall context of project in collaborative environment.
+
+ See the visual representation of commit history before and after merging vs. rebasing. Check for Merge and rebase to understand the difference.
+ $ git log master --merges --oneline
+
+- 
 
 
-#
-git reset & revert command - Nagesh to come up with an example
+Rebase:
+- rebase is good for local branches as it give you the history of all the changes.
 
-
-# GIT STASH
-- Modify some file example: LoginUser.java in Master branch. Don't commit.
-- Try to switch to example: dev-1.2.5 branch. You can't switch as it will overwrite Master branches LoginUser.java
-- Now, in order to switch to the dev-1.2.5 branch, you need to stash all your changes (stash meaning, archive the changes in some temp directory)
-- Now run $ git checkout dev-1.2.5 (you will be able to switch now.). Finish your work in dev-1.2.5 and commit your changes.
-- Now you can resume with your work in Master branch by bringing stashed changes back.
-- First, switch to master branch and run below command to unstash the changes.
-- $ git stash pop
-- You can stash multiple changes. And If you want to see all changes in the stash, use below command
- $ git stash list
-- If you want to pop a particular stashed item from the list, use below command
- $ git stash pop 0 (git stash list command shows all the stashed changes with numbers like 0,1,2 .etc.) 
-
-
-# .gitignore Concept
-
+Process: Rebasing dev-1.2.6 into main branch
+--------
+1. Clone the repository
+2. Activate dev-1.2.6 branch using below command
+	$ git checkout dev-1.2.6
+3. Make sure that you are on main branch
+	$ git checkout main
+4. Rebase dev-1.2.6 into main using below command
+	$ git rebase dev-1.2.6
+5. Resolve if there are any conflicts
+6. Commit rebase changes into local repo
+7. Push the rebase changes to remote repository 
+	$ git push
 
 #	
 git remote
@@ -301,8 +304,20 @@ git remote
 	PUSH
 	CLONE
 
-======
-1. Merge, Rebase & cherry-pick - Nagesh to come up with an example
-2. git reset & revert command - Nagesh to come up with an example
-3. Git fetch - understand better.
+Git fetch use cases:
+  1. If you want to know what changes are going to be pulled from remote before you update your local copy, use 'git fetch' command.
+	- $ git fetch origin
+		Output:
+		----
+		----
+	   29423da..4a852c5  master     -> origin/master
+[the above output meaning is... it's going to pull all the commits between 29423da..4a852c5.
+	- Run below commands to see exact file names
+		$ git show  4a852c5
+
+- If you want to see what changes are already fetched, use below command
+	$ git log HEAD..origin/master
+
+
+
 

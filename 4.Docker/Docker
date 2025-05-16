@@ -54,7 +54,8 @@ Installation Steps:
 Reference: https://docs.docker.com/engine/install/ubuntu
 
         $ curl -fsSL https://get.docker.com -o get-docker.sh
-        $ sudo sh get-docker.sh
+	$ chmod +x get-docker.sh
+        $ ./get-docker.sh
 
 #
 Installation Check
@@ -86,16 +87,7 @@ Managing docker containers
 # Create a new container using below command
 
 $ docker run -it ubuntu /bin/bash
-------------------
-- "docker run" command provides all lanuching capabilities for docker to create a container.
-- we use `docker run` to create new containers.
 
--it : provides interactive shell
-	
-ubuntu : Is an image and also called as "stock image" or "base image".
-	This image will be downloaded from Docker hub when we run 'docker run' 
-			  command first time.	
-/bin/bash: 'shell program' that will be installed in the terminal.
 
 # Inspect the new container.. Let's believe that it's separate machine
 1.
@@ -133,8 +125,7 @@ docker container ls -l
 Docker ps -l
 
 # List all images in the host machine
-docker images
-
+	
 QN:
 ---
 What is docker Engine
@@ -426,9 +417,9 @@ Official Images Syntax:
 	ubuntu
 
 # Specifying Image via tags
-	- ubuntu:16.04
+	- ubuntu:20.04
 	  ubuntu- is image name
-	  16.04 - is called tag
+	  20.04 - is called tag
 
 
 # Deleting an Image
@@ -451,6 +442,7 @@ Volumes:
 
 # Mount Volume(deployment_code) to a new container
 	$ docker run -it -v deployment_code:/deployment_code ubuntu:16.04 /bin/bash
+
 
 # Create 'Read-only' Volumes
 	$ docker run -it -v deployment_code:/deployment_code:ro ubuntu:16.04 /bin/bash
@@ -506,6 +498,10 @@ Can you explain how you have implememnted Docker for your application?
 7. Launch the gamutkart application from all containers.
 	$ http://IP:8080/gamutkart
 
+
+# Images Layers & Build Cache
+
+
 #
 Docker and Jenkins Integration
 1. Create a new Free style project in Jenkins
@@ -520,7 +516,7 @@ Docker and Jenkins Integration
 # Container creation process - Deep dive with layers
 
 
-Dns:
-Multistage builds
-
+Qns:
+- Multistage builds 
+- Docker compose
 
