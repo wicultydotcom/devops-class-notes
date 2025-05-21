@@ -11,8 +11,8 @@ Creating VM in Google cloud
 6. On the left menu, select 'OS and Storage'
 7. To select OS for the VM, Under 'Operating system and storage', click on 'Change'
 8. Under 'Operating System' drop-down, select 'ubuntu'
-9. Under 'Version', select 'Ubuntu 24.10 (x86/64, amd64 oracular image ....)'
-   (basically, we need ubuntu 24.10 with x86/64 bit processor architecture)
+9. Under 'Version', select 'Ubuntu 20.04 LTS' (x86/64, amd64 focal image ....)
+   (basically, we need ubuntu 20.04 with x86/64 bit processor architecture)
 10. Click on 'select' butoon
 11. On left menu, click on 'Networking' and select 'Allow HTTP trafic' and 'Allow HTTPS trafic'
 12. And finally, click on 'create' button at the bottom 
